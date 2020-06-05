@@ -22,7 +22,7 @@ namespace MufflonUtil
     {
         [SerializeField] private List<TAsset> _assets = new List<TAsset>();
         private readonly Dictionary<TAsset, int> _idByAsset = new Dictionary<TAsset, int>();
-
+        
         /// <summary>
         /// Retrieves an asset by its ID assigned by this manager.
         /// </summary>
@@ -88,10 +88,12 @@ namespace MufflonUtil
 #endif
         }
 
+#if UNITY_EDITOR
         private void OnValidate()
         {
-            AssignIDs();
+            FindAssets();
         }
+#endif
 
         private void AssignIDs()
         {

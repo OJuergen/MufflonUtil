@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using UnityEngine;
 
 namespace MufflonUtil
@@ -9,8 +10,21 @@ namespace MufflonUtil
     public class ScriptableObjectSingleton<T> : ScriptableObjectSingleton where T : ScriptableObjectSingleton<T>
     {
         private static T _instance;
-        public static T Instance =>
-            _instance = _instance ? _instance : Resources.FindObjectsOfTypeAll<T>().FirstOrDefault();
+        public static T Instance
+        {
+            get
+            {
+                if (_instance != null) return _instance;
+                _instance = Resources.FindObjectsOfTypeAll<T>().FirstOrDefault();
+                if (_instance == null)
+                    Debug.LogWarning(
+                        "Failed to locate ScriptableObject Singleton. " +
+                        "Please make sure you create and load a respective asset. " +
+                        "Unity loads assets that are referenced by scene objects. " +
+                        "Consider adding a MufflonUtil.AssetLoader script to an object in your scene.");
+                return _instance;
+            }
+        }
 
         protected void OnEnable()
         {

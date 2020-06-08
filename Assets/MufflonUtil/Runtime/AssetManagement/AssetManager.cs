@@ -58,16 +58,9 @@ namespace MufflonUtil
         }
 
 #if UNITY_EDITOR
-        private void OnImportedScriptableObject(ScriptableObject asset)
+        private void OnValidate()
         {
-            if (asset is TAsset t && !_assets.Contains(t)) FindAssets();
-        }
-
-        private void OnDeletedScriptableObject(string path)
-        {
-            _assets = _assets.Where(asset => asset != null).ToList();
-            _idByAsset.Clear();
-            for (var id = 0; id < _assets.Count; id++) _idByAsset[_assets[id]] = id;
+            FindAssets();
         }
 
         protected new void OnEnable()
@@ -85,9 +78,15 @@ namespace MufflonUtil
             AssetPostProcessor.DeletedAsset -= OnDeletedScriptableObject;
         }
 
-        private void OnValidate()
+        private void OnImportedScriptableObject(ScriptableObject asset)
         {
-            FindAssets();
+            if (asset is TAsset t && !_assets.Contains(t)) FindAssets();
+        }
+
+        private void OnDeletedScriptableObject(string path)
+        {
+            _assets = _assets.Where(asset => asset != null).ToList();
+            RefreshIdByAsset();
         }
 
         public void FindAssets()
@@ -99,9 +98,20 @@ namespace MufflonUtil
                 .OfType<TAsset>()
                 .OrderBy(a => a.name)
                 .ToList();
+            RefreshIdByAsset();
+        }
+#else
+        protected new void OnEnable()
+        {
+            base.OnEnable();
+            RefreshIdByAsset();
+        }
+#endif
+
+        private void RefreshIdByAsset()
+        {
             _idByAsset.Clear();
             for (var id = 0; id < _assets.Count; id++) _idByAsset[_assets[id]] = id;
         }
-#endif
     }
 }

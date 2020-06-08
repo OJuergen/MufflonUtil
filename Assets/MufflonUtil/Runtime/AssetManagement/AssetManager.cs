@@ -2,11 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
-using UnityEditor;
 using UnityEngine;
 
 namespace MufflonUtil
 {
+    public interface IAssetManager
+    {
+#if UNITY_EDITOR
+        void FindAssets();
+#endif
+    }
+
     /// <summary>
     /// A database for assets of type <typeparamref name="TAsset"/>.
     /// Used for referencing <see cref="GetID"/>s over the network.
@@ -17,12 +23,12 @@ namespace MufflonUtil
     /// </summary>
     /// <typeparam name="TManager">The type of the manager class. Needed for the <see cref="ScriptableObjectSingleton"/> implementation.</typeparam>
     /// <typeparam name="TAsset">The type of the managed assets.</typeparam>
-    public abstract class AssetManager<TManager, TAsset> : ScriptableObjectSingleton<TManager>
+    public abstract class AssetManager<TManager, TAsset> : ScriptableObjectSingleton<TManager>, IAssetManager
         where TAsset : ManagedAsset where TManager : AssetManager<TManager, TAsset>
     {
         [SerializeField] private List<TAsset> _assets = new List<TAsset>();
         private readonly Dictionary<TAsset, int> _idByAsset = new Dictionary<TAsset, int>();
-        
+
         /// <summary>
         /// Retrieves an asset by its ID assigned by this manager.
         /// </summary>
@@ -33,7 +39,7 @@ namespace MufflonUtil
         {
             if (id < 0 || id >= _assets.Count)
             {
-                throw new ArgumentException($"no asset with id {id} found");
+                throw new ArgumentOutOfRangeException($"no asset with id {id} found");
             }
 
             return _assets[id];
@@ -46,90 +52,56 @@ namespace MufflonUtil
 
         public int GetID(TAsset asset)
         {
-            if (!_idByAsset.ContainsKey(asset))
-                throw new InvalidOperationException($"{asset} not found");
-            return _idByAsset[asset];
+            return _idByAsset.TryGetValue(asset, out int id)
+                ? id
+                : throw new InvalidOperationException($"{asset} not found");
         }
 
-        private void Register(ScriptableObject asset)
+#if UNITY_EDITOR
+        private void OnImportedScriptableObject(ScriptableObject asset)
         {
-            if (!(asset is TAsset t) || _assets.Contains(t))
-                return;
-
-            _assets.Add(t);
-            AssignIDs();
+            if (asset is TAsset t && !_assets.Contains(t)) FindAssets();
         }
 
-        private void Unregister(ScriptableObject asset)
+        private void OnDeletedScriptableObject(string path)
         {
-            if (!(asset is TAsset t) || !_assets.Contains(t))
-                return;
-
-            _assets.Remove(t);
-            AssignIDs();
+            _assets = _assets.Where(asset => asset != null).ToList();
+            _idByAsset.Clear();
+            for (var id = 0; id < _assets.Count; id++) _idByAsset[_assets[id]] = id;
         }
 
         protected new void OnEnable()
         {
             base.OnEnable();
-            AssignIDs();
-#if UNITY_EDITOR
-            AssetPostProcessor.ImportedScriptableObject += Register;
-            AssetModificationProcessor.DeletingScriptableObject += Unregister;
-#endif
+            AssetPostProcessor.ImportedScriptableObject += OnImportedScriptableObject;
+            AssetPostProcessor.DeletedAsset += OnDeletedScriptableObject;
+            FindAssets();
         }
 
         protected new void OnDisable()
         {
             base.OnDisable();
-#if UNITY_EDITOR
-            AssetPostProcessor.ImportedScriptableObject -= Register;
-            AssetModificationProcessor.DeletingScriptableObject -= Unregister;
-#endif
+            AssetPostProcessor.ImportedScriptableObject -= OnImportedScriptableObject;
+            AssetPostProcessor.DeletedAsset -= OnDeletedScriptableObject;
         }
 
-#if UNITY_EDITOR
         private void OnValidate()
         {
             FindAssets();
         }
-#endif
 
-        private void AssignIDs()
+        public void FindAssets()
         {
-            _assets = _assets
-                .Where(asset => asset != null)
-                .Distinct()
-                .OrderBy(asset => asset.name)
-                .ToList();
-#if UNITY_EDITOR
-            EditorUtility.SetDirty(this);
-#endif
-            _idByAsset.Clear();
-            for (var i = 0; i < _assets.Count; i++)
-                AssignID(_assets[i], i);
-            OnIDsAssigned(_assets);
-        }
-
-        private void AssignID(TAsset asset, int id)
-        {
-            _idByAsset[asset] = id;
-            OnIDAssigned(asset, id);
-        }
-
-        protected virtual void OnIDAssigned(TAsset asset, int id)
-        { }
-
-        protected virtual void OnIDsAssigned(List<TAsset> assets)
-        { }
-
-        protected void FindAssets()
-        {
-            _assets = Resources.FindObjectsOfTypeAll<TAsset>()
-                .Distinct()
+            _assets = UnityEditor.AssetDatabase
+                .FindAssets("t:ManagedAsset")
+                .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
+                .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<ManagedAsset>)
+                .OfType<TAsset>()
                 .OrderBy(a => a.name)
                 .ToList();
-            AssignIDs();
+            _idByAsset.Clear();
+            for (var id = 0; id < _assets.Count; id++) _idByAsset[_assets[id]] = id;
         }
+#endif
     }
 }

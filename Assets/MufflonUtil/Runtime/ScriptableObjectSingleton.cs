@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 namespace MufflonUtil
@@ -40,15 +39,17 @@ namespace MufflonUtil
 #endif
         }
 
-        private static void OnScriptableObjectImported(ScriptableObject obj)
+#if UNITY_EDITOR
+        private void OnScriptableObjectImported(ScriptableObject obj)
         {
-            if (_instance != null && obj is T t && obj != _instance)
+            if (UnityEditor.AssetDatabase.FindAssets($"t:{typeof(T).Name}").Length > 1)
             {
                 Debug.LogError($"Created an asset of singleton type {typeof(T)} multiple times. "
                                + $"Please make sure there is only one asset of type {typeof(T)}");
                 Resources.UnloadAsset(_instance);
-                _instance = t;
+                _instance = (T) this;
             }
         }
+#endif
     }
 }

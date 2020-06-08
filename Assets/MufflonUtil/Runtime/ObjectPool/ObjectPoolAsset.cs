@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace MufflonUtil
 {
-    [CreateAssetMenu(fileName = "ObjectPool", menuName = "Util/Object Pool")]
+    [CreateAssetMenu(fileName = "ObjectPool", menuName = "MufflonUtil/Object Pool")]
     public class ObjectPoolAsset : ObjectPoolAsset<PooledObject>
     { }
 

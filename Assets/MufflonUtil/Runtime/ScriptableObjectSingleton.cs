@@ -17,10 +17,12 @@ namespace MufflonUtil
                 _instance = Resources.FindObjectsOfTypeAll<T>().FirstOrDefault();
                 if (_instance == null)
                     Debug.LogWarning(
-                        "Failed to locate ScriptableObject Singleton. " +
+                        $"Failed to locate ScriptableObject Singleton of type {typeof(T)}. " +
                         "Please make sure you create and load a respective asset. " +
-                        "Unity loads assets that are referenced by scene objects. " +
-                        "Consider adding a MufflonUtil.AssetLoader script to an object in your scene.");
+                        "Be aware that asset loading in the editor and the build differ. " +
+                        "To load the asset, you can put it in a Resources folder. " +
+                        "Note, however, that this affects the loading behaviour of the app. " +
+                        "Consider referencing it from a script on a scene object (see MufflonUtil.AssetLoader).");
                 return _instance;
             }
         }

@@ -6,6 +6,6 @@
   "description": "Various utility components and functions like. \nFor example singletons and object pools, extensions for Timeline, Mecanim and more.",
   "type": "library",
   "dependencies": {
-    "com.unity.timeline": "1.2.14"
+    "com.unity.timeline": "1.2.15"
   }
 }

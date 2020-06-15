@@ -60,7 +60,7 @@ namespace MufflonUtil
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            FindAssets();
+            UnityEditor.EditorApplication.delayCall += FindAssets;
         }
 
         protected new void OnEnable()

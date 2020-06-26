@@ -1,5 +1,4 @@
 using System;
-using UnityEngine.Events;
 
 namespace MufflonUtil
 {
@@ -7,11 +6,6 @@ namespace MufflonUtil
     { }
 
     [Serializable]
-    public class FloatReaction : UnityEvent<float>, IReaction<FloatSignal>
-    {
-        public void React(FloatSignal signal)
-        {
-            Invoke(signal.Data);
-        }
-    }
+    public class FloatReaction : Reaction<float>
+    { }
 }

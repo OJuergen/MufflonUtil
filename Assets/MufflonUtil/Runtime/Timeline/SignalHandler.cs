@@ -22,6 +22,14 @@ namespace MufflonUtil
         void React(T signal);
     }
 
+    public class Reaction<TData> : UnityEvent<TData>, IReaction<Signal<TData>>
+    {
+        public void React(Signal<TData> signal)
+        {
+            Invoke(signal.Data);
+        }
+    }
+
     public class SignalHandler<TSignal, TEvent> : SignalHandlerBase, INotificationReceiver,
         ISerializationCallbackReceiver
         where TSignal : Signal
@@ -74,7 +82,7 @@ namespace MufflonUtil
             _signalReactions = new Dictionary<TSignal, TEvent>();
             for (var i = 0; i < _signals.Length && i < _reactions.Length; i++)
             {
-                if(_signals[i] != null) _signalReactions[_signals[i]] = _reactions[i];
+                if (_signals[i] != null) _signalReactions[_signals[i]] = _reactions[i];
             }
 
             _signalReactions = _signalReactions
@@ -83,9 +91,23 @@ namespace MufflonUtil
         }
     }
 
+    /// <summary>
+    /// Receiver component that implements <see cref="INotificationReceiver"/> to handle <see cref="Signal"/>s.
+    /// Holds a list of reaction events that take a <see cref="Signal"/> as a parameter.
+    /// When receiving an <see cref="INotification"/> of type <see cref="Signal"/>, the reactions are invoked. 
+    /// <br/>
+    /// If the Signal carries data of a specific type, i.e., is an implementation of <see cref="Signal{T}"/>,
+    /// consider using a type-specific handler. See <see cref="FloatSignalHandler"/> for reference.
+    /// <br/>
+    /// If you don't want to use serialized UnityEvents to handle the Signal (performance), consider implementing
+    /// the <see cref="INotificationReceiver"/> interface with a custom handler component.
+    /// </summary>
     public class SignalHandler : SignalHandler<Signal, SignalEvent>
     { }
 
+    /// <summary>
+    /// Serializable unity event to handle a signal with data of unknown type or without data.
+    /// </summary>
     [Serializable]
     public class SignalEvent : UnityEvent<Signal>, IReaction<Signal>
     {

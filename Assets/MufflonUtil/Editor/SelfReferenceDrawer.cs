@@ -41,17 +41,30 @@ namespace MufflonUtil
             if (searchInChildren)
                 components.UnionWith(targetObject.GetComponentsInChildren(fieldInfo.FieldType, true));
             if (searchInParent)
-                components.UnionWith(targetObject.GetComponentsInParent(fieldInfo.FieldType,true));
+                components.UnionWith(targetObject.GetComponentsInParent(fieldInfo.FieldType, true));
             Object[] choices = components.Select(c => c as Object).ToArray();
 
             if (choices.Length > 0)
             {
+                label = EditorGUI.BeginProperty(position, label, property);
+                EditorGUI.BeginChangeCheck();
+                Undo.RecordObject(property.serializedObject.targetObject, $"Change self-reference {property.name}");
+
                 if (property.objectReferenceValue == null || !choices.Contains(property.objectReferenceValue))
                     property.objectReferenceValue = choices[0];
-                int selectedIndex = Array.IndexOf(choices, property.objectReferenceValue);
-                selectedIndex = EditorGUI.Popup(position, property.name, selectedIndex,
-                    choices.Select(choice => choice.name).ToArray());
-                property.objectReferenceValue = choices[selectedIndex];
+                int selectedIndex = EditorGUI.Popup(position, label,
+                    Array.IndexOf(choices, property.objectReferenceValue),
+                    choices.Select(choice => new GUIContent {text = choice.name}).ToArray());
+                if (EditorGUI.EndChangeCheck())
+                {
+                    property.objectReferenceValue = choices[selectedIndex];
+                    EditorUtility.SetDirty(property.serializedObject.targetObject);
+                    PrefabUtility.RecordPrefabInstancePropertyModifications(property.serializedObject.targetObject);
+                    if (property.serializedObject.targetObject is GameObject go)
+                        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(go.scene);
+                }
+
+                EditorGUI.EndProperty();
             }
             else
             {

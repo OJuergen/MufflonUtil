@@ -39,9 +39,9 @@ namespace MufflonUtil
 
             HashSet<Component> components = targetObject.GetComponents(fieldInfo.FieldType).ToHashSet();
             if (searchInChildren)
-                components.UnionWith(targetObject.GetComponentsInChildren(fieldInfo.FieldType));
+                components.UnionWith(targetObject.GetComponentsInChildren(fieldInfo.FieldType, true));
             if (searchInParent)
-                components.UnionWith(targetObject.GetComponentsInParent(fieldInfo.FieldType));
+                components.UnionWith(targetObject.GetComponentsInParent(fieldInfo.FieldType,true));
             Object[] choices = components.Select(c => c as Object).ToArray();
 
             if (choices.Length > 0)

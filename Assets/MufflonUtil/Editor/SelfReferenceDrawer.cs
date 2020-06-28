@@ -21,12 +21,16 @@ namespace MufflonUtil
                 return;
             }
 
-            var go = property.objectReferenceValue as GameObject;
-            Debug.Log($"parent is maybe {go}");
             var targetObject = property.serializedObject.targetObject as Component;
             if (targetObject == null)
             {
                 EditorGUI.HelpBox(position, "Invalid serialized object", MessageType.Warning);
+                return;
+            }
+
+            if (!typeof(Component).IsAssignableFrom(fieldInfo.FieldType))
+            {
+                EditorGUI.PropertyField(position, property);
                 return;
             }
 

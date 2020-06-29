@@ -14,6 +14,7 @@ namespace MufflonUtil
 #if UNITY_EDITOR
             _assets = UnityEditor.AssetDatabase.FindAssets("t:ScriptableObject")
                 .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
+                .Where(path => path.StartsWith("Assets/")) // exclude package assets
                 .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<ScriptableObject>)
                 .Where(so => so is ISingleton)
                 .OrderBy(so => so.name)

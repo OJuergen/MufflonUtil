@@ -94,6 +94,7 @@ namespace MufflonUtil
             _assets = UnityEditor.AssetDatabase
                 .FindAssets("t:ManagedAsset")
                 .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
+                .Where(path => path.StartsWith("Assets/")) // exclude package assets
                 .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<ManagedAsset>)
                 .OfType<TAsset>()
                 .OrderBy(a => a.name)

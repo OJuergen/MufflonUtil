@@ -6,11 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.3.1] - 2019-06-08
+## [0.3.1] - 2020-06-08
 ### Fixed
 - Asset manager ID retrieval was broken in build
 
-## [0.3.0] - 2019-06-08
+## [0.3.0] - 2020-06-08
 ### Added
 - Custom editor woith refresh button for asset managers
 - Samples folder with asset management examples
@@ -23,7 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Asset ID assignment events
 - Singleton asset manager
 
-## [0.2.0] - 2019-06-05
+## [0.2.0] - 2020-06-05
 ### Added
 - Readme
 - Changelog
@@ -34,11 +34,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Changed assembly definition names
 
-## [0.1.1] - 2019-06-05
+## [0.1.1] - 2020-06-05
 ### Changed
 - Changed version of Timeline dependency back to latest verified version for Unity 2019.3
 
-## [0.1.0] - 2019-06-05
+## [0.1.0] - 2020-06-05
 ### Added
 - First draft version of Mufflon Util library
 

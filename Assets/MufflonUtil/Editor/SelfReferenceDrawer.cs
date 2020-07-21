@@ -13,6 +13,8 @@ namespace MufflonUtil
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            property.serializedObject.Update();
+            
             CustomAttributeData customAttributeData = fieldInfo.CustomAttributes
                 .FirstOrDefault(a => a.AttributeType == typeof(SelfReferenceAttribute));
             if (customAttributeData == null)
@@ -70,6 +72,8 @@ namespace MufflonUtil
             {
                 EditorGUI.HelpBox(position, $"{property.name}: Missing {fieldInfo.FieldType}", MessageType.Warning);
             }
+            
+            property.serializedObject.ApplyModifiedProperties();
         }
     }
 }

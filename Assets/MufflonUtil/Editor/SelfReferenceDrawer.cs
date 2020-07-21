@@ -14,7 +14,7 @@ namespace MufflonUtil
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             property.serializedObject.Update();
-            
+
             CustomAttributeData customAttributeData = fieldInfo.CustomAttributes
                 .FirstOrDefault(a => a.AttributeType == typeof(SelfReferenceAttribute));
             if (customAttributeData == null)
@@ -30,7 +30,8 @@ namespace MufflonUtil
                 return;
             }
 
-            if (!typeof(Component).IsAssignableFrom(fieldInfo.FieldType))
+            if (!typeof(Component).IsAssignableFrom(fieldInfo.FieldType) &&
+                !typeof(GameObject).IsAssignableFrom(fieldInfo.FieldType))
             {
                 EditorGUI.PropertyField(position, property);
                 return;
@@ -38,42 +39,68 @@ namespace MufflonUtil
 
             var searchInChildren = (bool) customAttributeData.ConstructorArguments[0].Value;
             var searchInParent = (bool) customAttributeData.ConstructorArguments[1].Value;
+            label = EditorGUI.BeginProperty(position, label, property);
+            Object value = property.objectReferenceValue;
 
-            HashSet<Component> components = targetObject.GetComponents(fieldInfo.FieldType).ToHashSet();
-            if (searchInChildren)
-                components.UnionWith(targetObject.GetComponentsInChildren(fieldInfo.FieldType, true));
-            if (searchInParent)
-                components.UnionWith(targetObject.GetComponentsInParent(fieldInfo.FieldType, true));
-            Object[] choices = components.Select(c => c as Object).ToArray();
-
-            if (choices.Length > 0)
+            Object[] choices = GetChoices(targetObject, searchInChildren, searchInParent);
+            var choiceStrings = new List<string> {"<None>"};
+            for (var i = 0; i < choices.Length; i++)
             {
-                label = EditorGUI.BeginProperty(position, label, property);
-                EditorGUI.BeginChangeCheck();
-                Undo.RecordObject(property.serializedObject.targetObject, $"Change self-reference {property.name}");
-
-                if (property.objectReferenceValue == null || !choices.Contains(property.objectReferenceValue))
-                    property.objectReferenceValue = choices[0];
-                int selectedIndex = EditorGUI.Popup(position, label,
-                    Array.IndexOf(choices, property.objectReferenceValue),
-                    choices.Select(choice => new GUIContent {text = choice.name}).ToArray());
-                if (EditorGUI.EndChangeCheck())
+                string name = choices[i].name;
+                if (choices.Count(c => c.name == name) == 1) choiceStrings.Add(name);
+                else
                 {
-                    property.objectReferenceValue = choices[selectedIndex];
-                    EditorUtility.SetDirty(property.serializedObject.targetObject);
-                    PrefabUtility.RecordPrefabInstancePropertyModifications(property.serializedObject.targetObject);
-                    if (property.serializedObject.targetObject is GameObject go)
-                        UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(go.scene);
+                    var sameNameBeforeCount = 0;
+                    for (var j = 0; j < i; j++)
+                        if (choices[j].name == name)
+                            sameNameBeforeCount++;
+                    choiceStrings.Add($"{name} ({sameNameBeforeCount + 1})");
                 }
+            }
 
-                EditorGUI.EndProperty();
-            }
-            else
+            EditorGUI.BeginChangeCheck();
+            Undo.RecordObject(property.serializedObject.targetObject, $"Change self-reference {property.name}");
+
+            int selectedIndex = Array.IndexOf(choices, value) + 1;
+            selectedIndex = EditorGUI.Popup(position, label, selectedIndex,
+                choiceStrings.Select(choice => new GUIContent {text = choice}).ToArray());
+            if (EditorGUI.EndChangeCheck())
             {
-                EditorGUI.HelpBox(position, $"{property.name}: Missing {fieldInfo.FieldType}", MessageType.Warning);
+                property.objectReferenceValue = selectedIndex == 0 ? null : choices[selectedIndex - 1];
+                EditorUtility.SetDirty(property.serializedObject.targetObject);
+                PrefabUtility.RecordPrefabInstancePropertyModifications(property.serializedObject.targetObject);
+                if (property.serializedObject.targetObject is GameObject go)
+                    UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(go.scene);
             }
-            
+
+            EditorGUI.EndProperty();
+
             property.serializedObject.ApplyModifiedProperties();
+        }
+
+        private Object[] GetChoices(Component target, bool children, bool parents)
+        {
+            if (typeof(Component).IsAssignableFrom(fieldInfo.FieldType))
+            {
+                HashSet<Component> components = target.GetComponents(fieldInfo.FieldType).ToHashSet();
+                if (children)
+                    components.UnionWith(target.GetComponentsInChildren(fieldInfo.FieldType, true));
+                if (parents)
+                    components.UnionWith(target.GetComponentsInParent(fieldInfo.FieldType, true));
+                return components.Select(c => c as Object).ToArray();
+            }
+
+            if (typeof(GameObject).IsAssignableFrom(fieldInfo.FieldType))
+            {
+                HashSet<GameObject> components = new HashSet<GameObject> {target.gameObject};
+                if (children)
+                    components.UnionWith(target.GetComponentsInChildren<Transform>(true).Select(t => t.gameObject));
+                if (parents)
+                    components.UnionWith(target.GetComponentsInParent<Transform>(true).Select(t => t.gameObject));
+                return components.Select(c => c as Object).ToArray();
+            }
+
+            throw new Exception("Illegal field type");
         }
     }
 }

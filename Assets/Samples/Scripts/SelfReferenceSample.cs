@@ -6,7 +6,10 @@ namespace Samples.Scripts
     public class SelfReferenceSample : MonoBehaviour
     {
         [SerializeField, SelfReference(true, true)]
-        private GameObject _referenceParentAndChildren;
+        private TagComponent _referenceParentAndChildren;
+        
+        [SerializeField, SelfReference(true, true)]
+        private GameObject _referenceGameObjectParentAndChildren;
 
         [SerializeField, SelfReference(true)]
         private TagComponent _referenceChildren;

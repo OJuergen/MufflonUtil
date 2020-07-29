@@ -7,6 +7,10 @@ using UnityEngine.Playables;
 
 namespace MufflonUtil
 {
+    /// <summary>
+    /// Internal base class. Do NOT inherit from this! Inherit from <see cref="SignalHandler{TSignal,TEvent}"/> instead.
+    /// This non-generic base class is needed to allow for custom inspectors.
+    /// </summary>
     public abstract class SignalHandlerBase : MonoBehaviour
     {
         public abstract Type SignalType { get; }
@@ -17,12 +21,20 @@ namespace MufflonUtil
         public abstract void RemoveReactionTo(Signal signal);
     }
 
+    /// <summary>
+    /// Internal interface. Do NOT implement this directly. Instead, inherit from <see cref="Reaction{TData}"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of <see cref="Signal"/> to react to.</typeparam>
     public interface IReaction<in T> where T : Signal
     {
         void React(T signal);
     }
 
-    public class Reaction<TData> : UnityEvent<TData>, IReaction<Signal<TData>>
+    /// <summary>
+    /// Base class for serializable reaction Unity events to handle <see cref="Signal{TData}"/>.
+    /// </summary>
+    /// <typeparam name="TData">The type of data provided by the <see cref="Signal"/>.</typeparam>
+    public abstract class Reaction<TData> : UnityEvent<TData>, IReaction<Signal<TData>>
     {
         public void React(Signal<TData> signal)
         {
@@ -30,7 +42,14 @@ namespace MufflonUtil
         }
     }
 
-    public class SignalHandler<TSignal, TEvent> : SignalHandlerBase, INotificationReceiver,
+    /// <summary>
+    /// Base class for signal handlers. Implement this to handle Timeline markers of type <typeparamref name="TSignal"/>.
+    /// Exposes serializable Unity events of type <typeparamref name="TEvent"/> that pass the data of the signal.
+    /// </summary>
+    /// <typeparam name="TSignal">The <see cref="Signal"/> type. Must be [Serializable].</typeparam>
+    /// <typeparam name="TEvent">The Unity event to handle the signal.
+    /// Must be [Serializable] and inherit from <see cref="Reaction{TData}"/>.</typeparam>
+    public abstract class SignalHandler<TSignal, TEvent> : SignalHandlerBase, INotificationReceiver,
         ISerializationCallbackReceiver
         where TSignal : Signal
         where TEvent : UnityEventBase, IReaction<TSignal>, new()
@@ -107,6 +126,7 @@ namespace MufflonUtil
 
     /// <summary>
     /// Serializable unity event to handle a signal with data of unknown type or without data.
+    /// USes the <see cref="Signal"/> itself as event parameter without extracting the data. 
     /// </summary>
     [Serializable]
     public class SignalEvent : UnityEvent<Signal>, IReaction<Signal>

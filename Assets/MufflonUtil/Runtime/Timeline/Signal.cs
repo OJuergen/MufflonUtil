@@ -1,12 +1,23 @@
-using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
 
 namespace MufflonUtil
 {
+    /// <summary>
+    /// Very basic implementation of a Timeline <see cref="Marker"/> implementing
+    /// the <see cref="INotification"/> interface.
+    /// Use in conjunction with an implementation of an <see cref="INotificationReceiver"/> to trigger code execution
+    /// from a timeline event without the need of an additional <see cref="SignalAsset"/> asset.
+    /// For convenience, use <see cref="SignalHandler"/> to expose Unity events as a reaction to the signal.
+    /// Use generic overrides <see cref="Signal{T}"/> and <see cref="SignalHandler{TSignal,TEvent}"/> to add
+    /// data to custom signals.
+    /// </summary>
     public class Signal : Marker, INotification, INotificationOptionProvider
     {
+        [SerializeField, Tooltip("ID for this signal for efficient comparison")]
+        private PropertyName _id = "SignalID";
         [SerializeField, Tooltip("Use this flag to send the notification in Edit Mode.")]
         private bool _triggerInEditMode;
         [SerializeField, Tooltip("Use this flag to send the notification " +
@@ -15,16 +26,23 @@ namespace MufflonUtil
         [SerializeField, Tooltip("Use this flag to send the notification only once when looping.")]
         private bool _triggerOnce;
 
-        public virtual PropertyName id => "Signal";
+        public virtual PropertyName id => _id;
         public NotificationFlags flags =>
             (_triggerInEditMode ? NotificationFlags.TriggerInEditMode : default) |
             (_retroactive ? NotificationFlags.Retroactive : default) |
             (_triggerOnce ? NotificationFlags.TriggerOnce : default);
     }
 
+    /// <summary>
+    /// <see cref="Signal"/> that carries data of type <typeparamref name="T"/>.
+    /// Use in conjunction with a <see cref="SignalHandler{TSignal,TEvent}"/> implementation to expose
+    /// <see cref="UnityEvent{T}"/> reactions.
+    /// Note there is a slight performance penalty for UnityEvents. Use a custom implementation of
+    /// <see cref="INotificationReceiver"/> to circumvent this.
+    /// </summary>
+    /// <typeparam name="T">Type of data carried by this signal.</typeparam>
     public abstract class Signal<T> : Signal
     {
-        public override PropertyName id => $"Signal ({typeof(T)})";
         [SerializeField] private T _data;
         public T Data => _data;
 

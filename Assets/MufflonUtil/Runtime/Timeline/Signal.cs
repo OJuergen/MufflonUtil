@@ -17,7 +17,8 @@ namespace MufflonUtil
     public class Signal : Marker, INotification, INotificationOptionProvider
     {
         [SerializeField, Tooltip("ID for this signal for efficient comparison")]
-        private PropertyName _id = "SignalID";
+        private string _id = "SignalID";
+        private PropertyName _propertyName;
         [SerializeField, Tooltip("Use this flag to send the notification in Edit Mode.")]
         private bool _triggerInEditMode;
         [SerializeField, Tooltip("Use this flag to send the notification " +
@@ -26,17 +27,22 @@ namespace MufflonUtil
         [SerializeField, Tooltip("Use this flag to send the notification only once when looping.")]
         private bool _triggerOnce;
 
-        public virtual PropertyName id => _id;
+        public virtual PropertyName id => _propertyName;
         public NotificationFlags flags =>
             (_triggerInEditMode ? NotificationFlags.TriggerInEditMode : default) |
             (_retroactive ? NotificationFlags.Retroactive : default) |
             (_triggerOnce ? NotificationFlags.TriggerOnce : default);
+
+        protected void OnEnable()
+        {
+            _propertyName = _id;
+        }
     }
 
     /// <summary>
     /// <see cref="Signal"/> that carries data of type <typeparamref name="T"/>.
     /// Use in conjunction with a <see cref="SignalHandler{TSignal,TEvent}"/> implementation to expose
-    /// <see cref="UnityEvent{T}"/> reactions.
+    /// <see cref="UnityEvent{T0}"/> reactions.
     /// Note there is a slight performance penalty for UnityEvents. Use a custom implementation of
     /// <see cref="INotificationReceiver"/> to circumvent this.
     /// </summary>

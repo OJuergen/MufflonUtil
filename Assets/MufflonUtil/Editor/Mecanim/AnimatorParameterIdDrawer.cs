@@ -16,11 +16,17 @@ namespace MufflonUtil
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             if (property.serializedObject.isEditingMultipleObjects) return;
+            label = EditorGUI.BeginProperty(position, label, property);
             SerializedProperty nameProperty = property.FindPropertyRelative("_name");
+            EditorGUI.BeginChangeCheck();
             string name = EditorGUI.TextField(position, label, nameProperty.stringValue);
-            property.serializedObject.targetObject.GetType()
-                .GetField(property.propertyPath, BindingFlags.NonPublic | BindingFlags.Instance)
-                ?.SetValue(property.serializedObject.targetObject, new AnimatorParameterId(name));
+            if (EditorGUI.EndChangeCheck())
+            {
+                property.serializedObject.targetObject.GetType()
+                    .GetField(property.propertyPath, BindingFlags.NonPublic | BindingFlags.Instance)
+                    ?.SetValue(property.serializedObject.targetObject, new AnimatorParameterId(name));
+            }
+            EditorGUI.EndProperty();
         }
     }
 }

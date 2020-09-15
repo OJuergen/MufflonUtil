@@ -4,9 +4,14 @@ namespace MufflonUtil
 {
     public class FaceCamera : MonoBehaviour
     {
-        [SerializeField] private bool _fixXRotation;
-        [SerializeField] private bool _fixYRotation;
-        [SerializeField] private bool _fixZRotation;
+        [SerializeField, Tooltip("If true, euler angle X will be set to zero")]
+        private bool _fixXRotation;
+        [SerializeField, Tooltip("If true, euler angle Y will be set to zero")]
+        private bool _fixYRotation;
+        [SerializeField, Tooltip("If true, euler angle Z will be set to zero")]
+        private bool _fixZRotation;
+        [SerializeField, Tooltip("Additional rotation applied to the object")]
+        private Vector3 _offset;
 
         private Camera _camera;
 
@@ -24,7 +29,7 @@ namespace MufflonUtil
                 _fixXRotation ? 0 : lookRotation.eulerAngles.x,
                 _fixYRotation ? 0 : lookRotation.eulerAngles.y,
                 _fixZRotation ? 0 : lookRotation.eulerAngles.z
-            );
+            ) * Quaternion.Euler(_offset);
         }
     }
 }

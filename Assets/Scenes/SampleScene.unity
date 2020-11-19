@@ -43,7 +43,7 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 11
+  serializedVersion: 12
   m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
@@ -98,7 +98,8 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 1
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 5677227398916454499a06e9015a3f74,
+    type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -118,6 +119,8 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
@@ -345,6 +348,7 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1579304219}
+        m_TargetAssemblyTypeName: 
         m_MethodName: ReactToSignal
         m_Mode: 0
         m_Arguments:
@@ -406,6 +410,7 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1579304219}
+        m_TargetAssemblyTypeName: 
         m_MethodName: ReactToFloat
         m_Mode: 0
         m_Arguments:
@@ -434,6 +439,7 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1579304219}
+        m_TargetAssemblyTypeName: 
         m_MethodName: ReactToObject
         m_Mode: 0
         m_Arguments:
@@ -455,13 +461,23 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 118068639458900609, guid: b0b76e51a6d61e44fb5929c8fe5c0690,
         type: 3}
-      propertyPath: _referenceParent
+      propertyPath: _regularReference
       value: 
-      objectReference: {fileID: 1342012451608479431}
+      objectReference: {fileID: 1342012451608479433}
+    - target: {fileID: 118068639458900609, guid: b0b76e51a6d61e44fb5929c8fe5c0690,
+        type: 3}
+      propertyPath: _referenceChildren
+      value: 
+      objectReference: {fileID: 1342012451608479433}
     - target: {fileID: 2648937714197252634, guid: b0b76e51a6d61e44fb5929c8fe5c0690,
         type: 3}
       propertyPath: m_Name
       value: ComponentReferenceSample
+      objectReference: {fileID: 0}
+    - target: {fileID: 5464707592755294378, guid: b0b76e51a6d61e44fb5929c8fe5c0690,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5464707592755294378, guid: b0b76e51a6d61e44fb5929c8fe5c0690,
         type: 3}
@@ -480,6 +496,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5464707592755294378, guid: b0b76e51a6d61e44fb5929c8fe5c0690,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5464707592755294378, guid: b0b76e51a6d61e44fb5929c8fe5c0690,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -492,16 +513,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5464707592755294378, guid: b0b76e51a6d61e44fb5929c8fe5c0690,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5464707592755294378, guid: b0b76e51a6d61e44fb5929c8fe5c0690,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5464707592755294378, guid: b0b76e51a6d61e44fb5929c8fe5c0690,
         type: 3}
@@ -525,18 +536,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b0b76e51a6d61e44fb5929c8fe5c0690, type: 3}
---- !u!114 &1342012451608479431 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2718025056778291880, guid: b0b76e51a6d61e44fb5929c8fe5c0690,
-    type: 3}
-  m_PrefabInstance: {fileID: 1342012451608479430}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1342012451608479432}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92fc591f696256e45bd5253886827ea1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1342012451608479432 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8835519803417525211, guid: b0b76e51a6d61e44fb5929c8fe5c0690,

@@ -1,5 +1,23 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-6811954720164342472
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ac6d28fd9a443b6bd8387f447ee7a1a, type: 3}
+  m_Name: Signal/Int
+  m_EditorClassIdentifier: 
+  m_Time: 2.0833333333333335
+  _id: SignalID
+  _triggerInEditMode: 0
+  _retroactive: 0
+  _triggerOnce: 0
+  _data: 7
 --- !u!114 &-4473277002889287374
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -13,6 +31,7 @@ MonoBehaviour:
   m_Name: Signal/Object
   m_EditorClassIdentifier: 
   m_Time: 0.5166666666666667
+  _id: SignalID
   _triggerInEditMode: 1
   _retroactive: 0
   _triggerOnce: 0
@@ -83,7 +102,8 @@ MonoBehaviour:
     - {fileID: -296040124441783389}
     - {fileID: -4473277002889287374}
     - {fileID: 1394535311431477865}
-    - {fileID: 6347441232924110882}
+    - {fileID: -6811954720164342472}
+    - {fileID: 6920491699011907580}
 --- !u!114 &1394535311431477865
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -97,11 +117,12 @@ MonoBehaviour:
   m_Name: Signal/Float
   m_EditorClassIdentifier: 
   m_Time: 1.25
+  _id: SignalID
   _triggerInEditMode: 1
   _retroactive: 0
   _triggerOnce: 0
   _data: 1.23
---- !u!114 &6347441232924110882
+--- !u!114 &6920491699011907580
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -110,9 +131,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: Signal/Int
-  m_EditorClassIdentifier: MufflonUtil:MufflonUtil:IntSignal
-  m_Time: 2.2333333333333334
-  <parent>k__BackingField: {fileID: 621201973616677698}
-  _data: 0
+  m_Script: {fileID: 11500000, guid: 4cd121540b4547b7b0c3db8cb22f2467, type: 3}
+  m_Name: Signal/String
+  m_EditorClassIdentifier: 
+  m_Time: 2.933333333333333
+  _id: SignalID
+  _triggerInEditMode: 0
+  _retroactive: 0
+  _triggerOnce: 0
+  _data: Test

@@ -17,7 +17,9 @@ namespace Samples.Scripts
         [SerializeField, SelfReference(false, true)]
         private TagComponent _referenceParent;
 
-        [SerializeField, SelfReference()]
+        [SerializeField, SelfReference]
         private TagComponent _referenceSelf;
+
+        [SerializeField] private Component _regularReference;
     }
 }

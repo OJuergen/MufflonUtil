@@ -37,6 +37,7 @@ namespace MufflonUtil
 
             var searchInChildren = (bool) customAttributeData.ConstructorArguments[0].Value;
             var searchInParent = (bool) customAttributeData.ConstructorArguments[1].Value;
+            var autoAssign = (bool) customAttributeData.ConstructorArguments[2].Value;
             label = EditorGUI.BeginProperty(position, label, property);
             Object value = property.objectReferenceValue;
 
@@ -52,13 +53,28 @@ namespace MufflonUtil
                     for (var j = 0; j < i; j++)
                         if (choices[j].name == name)
                             sameNameBeforeCount++;
-                    choiceStrings.Add($"{name} ({sameNameBeforeCount + 1})");
+                    switch (sameNameBeforeCount)
+                    {
+                        case 0:
+                            choiceStrings.Add($"{name} ({choices[i].GetType().Name})");
+                            break;
+                        case 1:
+                            choiceStrings.Add($"{name} (2nd {choices[i].GetType().Name})");
+                            break;
+                        case 2:
+                            choiceStrings.Add($"{name} (3rd {choices[i].GetType().Name})");
+                            break;
+                        default:
+                            choiceStrings.Add($"{name} ({sameNameBeforeCount + 1}th {choices[i].GetType().Name})");
+                            break;
+                    }
                 }
             }
 
             EditorGUI.BeginChangeCheck();
             Undo.RecordObject(property.serializedObject.targetObject, $"Change self-reference {property.name}");
 
+            if (autoAssign && value == null && choices.Length > 0) value = choices[0];
             int selectedIndex = Array.IndexOf(choices, value) + 1;
             selectedIndex = EditorGUI.Popup(position, label, selectedIndex,
                 choiceStrings.Select(choice => new GUIContent {text = choice}).ToArray());

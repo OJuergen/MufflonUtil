@@ -19,5 +19,10 @@ namespace Samples.Scripts
         {
             Debug.Log($"Reacting to float signal with parameter {arg}");
         }
+
+        public void ReactToString(string arg)
+        {
+            Debug.Log($"Reacting to string signal with parameter {arg}");
+        }
     }
 }

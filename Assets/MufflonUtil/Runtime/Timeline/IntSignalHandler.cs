@@ -2,10 +2,10 @@ using System;
 
 namespace MufflonUtil
 {
-    public class IntSignalHandler : SignalHandler<FloatSignal, IntReaction>
+    public class IntSignalHandler : SignalHandler<IntSignal, IntReaction>
     { }
 
     [Serializable]
-    public class IntReaction : Reaction<float>
+    public class IntReaction : Reaction<int>
     { }
 }

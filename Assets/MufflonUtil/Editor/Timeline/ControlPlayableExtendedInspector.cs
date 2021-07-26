@@ -34,13 +34,13 @@ namespace MufflonUtil
                     string timelinePath = AssetDatabase.GetAssetPath(inspectedDirector.playableAsset);
                     string assetPath = timelinePath.Substring(0, timelinePath.LastIndexOf('/'));
                     string path = EditorUtility.SaveFilePanel("Create new prefab", assetPath, "ControlTrackPrefab", "prefab");
+                    if (string.IsNullOrEmpty(path) || !path.Contains(Application.dataPath)) return; // aborted or invalid
                     path = $"Assets/{path.Substring(Application.dataPath.Length)}";
-                    if (string.IsNullOrEmpty(path)) return; // aborted
                     prefab = PrefabUtility.SaveAsPrefabAsset(sourceGO, path);
                 }
 
                 playableAsset.prefabGameObject = prefab;
-                GameObject parentGO = sourceGO.transform.parent.gameObject;
+                GameObject parentGO = sourceGO.transform.parent != null ? sourceGO.transform.parent.gameObject : null;
                 inspectedDirector.SetReferenceValue(playableAsset.sourceGameObject.exposedName, parentGO);
                 DestroyImmediate(sourceGO);
                 EditorUtility.SetDirty(playableAsset);

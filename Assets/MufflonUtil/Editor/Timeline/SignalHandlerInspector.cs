@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEditor.Timeline;
 using UnityEngine;
 
 namespace MufflonUtil
@@ -29,6 +30,12 @@ namespace MufflonUtil
                 GUI.enabled = false;
                 EditorGUILayout.ObjectField(signal, signal.GetType(), false);
                 GUI.enabled = true;
+                if (TimelineEditor.inspectedDirector != null && GUILayout.Button("Select"))
+                {
+                    TimelineEditor.inspectedDirector.playableAsset = signal.parent.timelineAsset;
+                    Selection.objects = new Object[] {signal};
+                    TimelineEditor.Refresh(RefreshReason.WindowNeedsRedraw);
+                }
                 if (GUILayout.Button("Remove Reaction"))
                     signalHandler.RemoveReactionTo(signal);
                 EditorGUILayout.EndHorizontal();

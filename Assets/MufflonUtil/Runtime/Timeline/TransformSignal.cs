@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MufflonUtil
 {
-    [DisplayName("Signal/Transform")]
+    [DisplayName("Standalone Signal/Transform")]
     public class TransformSignal : Signal<Transform>
     { }
 }

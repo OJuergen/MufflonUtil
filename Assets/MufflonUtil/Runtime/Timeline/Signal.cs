@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Playables;
@@ -14,6 +15,7 @@ namespace MufflonUtil
     /// Use generic overrides <see cref="Signal{T}"/> and <see cref="SignalHandler{TSignal,TEvent}"/> to add
     /// data to custom signals.
     /// </summary>
+    [DisplayName("Standalone Signal")]
     public class Signal : Marker, INotification, INotificationOptionProvider
     {
         [SerializeField, Tooltip("ID for this signal for efficient comparison")]

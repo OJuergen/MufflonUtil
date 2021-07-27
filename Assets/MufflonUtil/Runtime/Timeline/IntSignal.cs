@@ -2,7 +2,7 @@ using System.ComponentModel;
 
 namespace MufflonUtil
 {
-    [DisplayName("Signal/Int")]
+    [DisplayName("Standalone Signal/Int")]
     public class IntSignal : Signal<int>
     { }
 }

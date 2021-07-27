@@ -3,7 +3,7 @@ using UnityEngine.Playables;
 
 namespace MufflonUtil
 {
-    [DisplayName("Signal/PlayableAsset")]
+    [DisplayName("Standalone Signal/PlayableAsset")]
     public class PlayableAssetSignal : Signal<PlayableAsset>
     { }
 }

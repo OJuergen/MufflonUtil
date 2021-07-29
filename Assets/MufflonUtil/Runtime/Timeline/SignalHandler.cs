@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Playables;
@@ -19,56 +20,52 @@ namespace MufflonUtil
         public abstract void AddReactionTo(Signal signal);
 
         public abstract void RemoveReactionTo(Signal signal);
-    }
+        public abstract bool HasReactionTo(string group);
 
-    /// <summary>
-    /// Internal interface. Do NOT implement this directly. Instead, inherit from <see cref="Reaction{TData}"/>.
-    /// </summary>
-    /// <typeparam name="T">The type of <see cref="Signal"/> to react to.</typeparam>
-    public interface IReaction<in T> where T : Signal
-    {
-        void React(T signal);
-    }
+        public abstract void AddReactionTo(string group);
 
-    /// <summary>
-    /// Base class for serializable reaction Unity events to handle <see cref="Signal{TData}"/>.
-    /// </summary>
-    /// <typeparam name="TData">The type of data provided by the <see cref="Signal"/>.</typeparam>
-    public abstract class Reaction<TData> : UnityEvent<TData>, IReaction<Signal<TData>>
-    {
-        public void React(Signal<TData> signal)
-        {
-            Invoke(signal.Data);
-        }
+        public abstract void RemoveReactionTo(string group);
     }
 
     /// <summary>
     /// Base class for signal handlers. Implement this to handle Timeline markers of type <typeparamref name="TSignal"/>.
-    /// Exposes serializable Unity events of type <typeparamref name="TEvent"/> that pass the data of the signal.
+    /// Exposes serializable UnityEvents of type <typeparamref name="TEvent"/> that pass the data of the signal.
     /// </summary>
     /// <typeparam name="TSignal">The <see cref="Signal"/> type. Must be [Serializable].</typeparam>
-    /// <typeparam name="TEvent">The Unity event to handle the signal.
-    /// Must be [Serializable] and inherit from <see cref="Reaction{TData}"/>.</typeparam>
+    /// <typeparam name="TEvent">The Unity event to handle the signal. Must be [Serializable]</typeparam>
     public abstract class SignalHandler<TSignal, TEvent> : SignalHandlerBase, INotificationReceiver,
         ISerializationCallbackReceiver
         where TSignal : Signal
-        where TEvent : UnityEventBase, IReaction<TSignal>, new()
+        where TEvent : UnityEventBase, new()
     {
         public override Type SignalType => typeof(TSignal);
-        public event Action<TSignal> SignalFired;
         private Dictionary<TSignal, TEvent> _signalReactions = new Dictionary<TSignal, TEvent>();
+        private Dictionary<string, TEvent> _signalGroupReactions = new Dictionary<string, TEvent>();
+        [SerializeField] private TSignal[] _signals;
         [SerializeField, CustomSignalEventDrawer]
         private TEvent[] _reactions;
-        [SerializeField] private TSignal[] _signals;
+        [SerializeField, SignalGroup(false)] private string[] _signalGroups;
+        [SerializeField, CustomSignalEventDrawer]
+        private TEvent[] _groupReactions;
 
-        public void OnNotify(Playable origin, INotification notification, object context)
+        // ReSharper disable once Unity.RedundantEventFunction - Needed for Unity to allow enabling/disabling this
+        private void OnEnable()
+        { }
+
+        public virtual void OnNotify(Playable origin, INotification notification, object context)
         {
+            if (!enabled) return;
             if (notification is TSignal signal)
             {
-                if (_signalReactions.TryGetValue(signal, out TEvent reaction)) reaction.React(signal);
-                SignalFired?.Invoke(signal);
+                if (_signalReactions.TryGetValue(signal, out TEvent reaction)) React(signal, reaction);
+                if (_signalGroupReactions.TryGetValue(signal.Group, out TEvent groupReaction))
+                    React(signal, groupReaction);
+                RaiseEvent(signal);
             }
         }
+
+        protected abstract void React(TSignal signal, TEvent reaction);
+        protected abstract void RaiseEvent(TSignal signal);
 
         public override bool HasReactionTo(Signal signal)
         {
@@ -90,10 +87,30 @@ namespace MufflonUtil
             _signalReactions.Remove(tSignal);
         }
 
+        public override bool HasReactionTo(string signalGroup)
+        {
+            return _signalGroupReactions.ContainsKey(signalGroup);
+        }
+
+        public override void AddReactionTo([NotNull] string group)
+        {
+            if (group == null) throw new ArgumentNullException(nameof(group));
+            if (HasReactionTo(group)) return;
+            _signalGroupReactions.Add(group, new TEvent());
+        }
+
+        public override void RemoveReactionTo([NotNull] string group)
+        {
+            if (group == null) throw new ArgumentNullException(nameof(group));
+            _signalGroupReactions.Remove(group);
+        }
+
         public void OnBeforeSerialize()
         {
             _signals = _signalReactions.Keys.ToArray();
             _reactions = _signalReactions.Values.ToArray();
+            _signalGroups = _signalGroupReactions.Keys.ToArray();
+            _groupReactions = _signalGroupReactions.Values.ToArray();
         }
 
         public void OnAfterDeserialize()
@@ -104,36 +121,58 @@ namespace MufflonUtil
                 if (_signals[i] != null) _signalReactions[_signals[i]] = _reactions[i];
             }
 
-            _signalReactions = _signalReactions
-                .Where(keyValuePair => keyValuePair.Key != null)
-                .ToDictionary(keyValuePair => keyValuePair.Key, keyValuePair => keyValuePair.Value);
+            _signalGroupReactions = new Dictionary<string, TEvent>();
+            for (var i = 0; i < _signalGroups.Length && i < _groupReactions.Length; i++)
+            {
+                if (_signalGroups[i] != null) _signalGroupReactions[_signalGroups[i]] = _groupReactions[i];
+            }
+        }
+    }
+
+    /// <summary>
+    /// Receiver component that implements <see cref="INotificationReceiver"/> to handle data-carrying
+    /// <see cref="Signal{T}"/>s. Holds a list of reaction <see cref="UnityEvent{T}"/>.
+    /// When receiving an <see cref="INotification"/> of type <see cref="Signal{T}"/>, the reactions are invoked. 
+    /// There is also a plain C# event <see cref="Fired"/> that can be subscribed to.
+    /// </summary>
+    public class DataSignalHandler<T> : SignalHandler<Signal<T>, UnityEvent<T>>
+    {
+        public event Action<T> Fired;
+
+        protected override void React(Signal<T> signal, UnityEvent<T> reaction)
+        {
+            reaction?.Invoke(signal.Data);
+        }
+
+        protected override void RaiseEvent(Signal<T> signal)
+        {
+            Fired?.Invoke(signal.Data);
         }
     }
 
     /// <summary>
     /// Receiver component that implements <see cref="INotificationReceiver"/> to handle <see cref="Signal"/>s.
-    /// Holds a list of reaction events that take a <see cref="Signal"/> as a parameter.
-    /// When receiving an <see cref="INotification"/> of type <see cref="Signal"/>, the reactions are invoked. 
+    /// Holds a list of reaction <see cref="UnityEvent{T}"/>s.
+    /// When receiving an <see cref="INotification"/> of type <see cref="Signal"/>, the reactions are invoked
+    /// and the signal is passed as an event parameter.
     /// <br/>
     /// If the Signal carries data of a specific type, i.e., is an implementation of <see cref="Signal{T}"/>,
-    /// consider using a type-specific handler. See <see cref="FloatSignalHandler"/> for reference.
+    /// consider using an implementation of <see cref="DataSignalHandler{T}"/> instead.
     /// <br/>
-    /// If you don't want to use serialized UnityEvents to handle the Signal (performance), consider implementing
-    /// the <see cref="INotificationReceiver"/> interface with a custom handler component.
+    /// There is also a plain C# event <see cref="Fired"/> that can be subscribed to.
     /// </summary>
-    public class SignalHandler : SignalHandler<Signal, SignalEvent>
-    { }
-
-    /// <summary>
-    /// Serializable unity event to handle a signal with data of unknown type or without data.
-    /// USes the <see cref="Signal"/> itself as event parameter without extracting the data. 
-    /// </summary>
-    [Serializable]
-    public class SignalEvent : UnityEvent<Signal>, IReaction<Signal>
+    public class SignalHandler : SignalHandler<Signal, UnityEvent<Signal>>
     {
-        public void React(Signal signal)
+        public event Action<Signal> Fired;
+
+        protected override void React(Signal signal, UnityEvent<Signal> reaction)
         {
-            Invoke(signal);
+            reaction?.Invoke(signal);
+        }
+
+        protected override void RaiseEvent(Signal signal)
+        {
+            Fired?.Invoke(signal);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace MufflonUtil
     /// Use generic overrides <see cref="Signal{T}"/> and <see cref="SignalHandler{TSignal,TEvent}"/> to add
     /// data to custom signals.
     /// </summary>
-    [DisplayName("Standalone Signal")]
+    [DisplayName("Standalone Signal"), CustomStyle("Signal")]
     public class Signal : Marker, INotification, INotificationOptionProvider
     {
         [SerializeField, Tooltip("ID for this signal for efficient comparison")]
@@ -28,8 +28,11 @@ namespace MufflonUtil
         private bool _retroactive;
         [SerializeField, Tooltip("Use this flag to send the notification only once when looping.")]
         private bool _triggerOnce;
+        [SerializeField, Tooltip("optional: SignalHandler can register directly to a Signal or to a Signal Group"), SignalGroup(true)]
+        private string _group;
 
         public virtual PropertyName id => _propertyName;
+        public string Group => _group;
         public NotificationFlags flags =>
             (_triggerInEditMode ? NotificationFlags.TriggerInEditMode : default) |
             (_retroactive ? NotificationFlags.Retroactive : default) |

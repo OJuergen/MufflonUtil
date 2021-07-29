@@ -1,0 +1,12 @@
+﻿Signal {
+    background-image: resource("Assets/MufflonUtil/Editor/Timeline/Stylesheets/Extensions/signalIcon.png");
+}
+
+Signal:checked {
+    background-image: resource("Assets/MufflonUtil/Editor/Timeline/Stylesheets/Extensions/signalIcon.png");
+}
+
+Signal:hover:focus:checked {
+    background-image: resource("Assets/MufflonUtil/Editor/Timeline/Stylesheets/Extensions/signalIconSelected.png");
+}
+

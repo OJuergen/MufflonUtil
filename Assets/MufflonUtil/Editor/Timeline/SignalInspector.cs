@@ -53,12 +53,7 @@ namespace MufflonUtil
             {
                 EditorGUILayout.Separator();
                 Editor editor = GetOrCreateEditor(signalHandler);
-                if (DrawReceiverHeader(signalHandler))
-                {
-                    editor.OnInspectorGUI();
-                    if(!signalHandler.HasReactionTo(signal) && GUILayout.Button($"Add Reaction to {signal}")) 
-                        signalHandler.AddReactionTo(signal);
-                }
+                if (DrawReceiverHeader(signalHandler)) editor.OnInspectorGUI();
             }
         }
 

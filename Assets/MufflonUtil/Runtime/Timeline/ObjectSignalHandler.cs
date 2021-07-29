@@ -1,11 +1,7 @@
-using System;
+using UnityEngine;
 
 namespace MufflonUtil
 {
-    public class ObjectSignalHandler : SignalHandler<ObjectSignal, ObjectReaction>
-    { }
-
-    [Serializable]
-    public class ObjectReaction : Reaction<UnityEngine.Object>
+    public class ObjectSignalHandler : DataSignalHandler<Object>
     { }
 }

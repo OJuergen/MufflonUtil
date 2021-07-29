@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Time: 2.0833333333333335
   _id: SignalID
-  _triggerInEditMode: 0
+  _triggerInEditMode: 1
   _retroactive: 0
   _triggerOnce: 0
+  _group: 
   _data: 7
 --- !u!114 &-4473277002889287374
 MonoBehaviour:
@@ -35,6 +36,7 @@ MonoBehaviour:
   _triggerInEditMode: 1
   _retroactive: 0
   _triggerOnce: 0
+  _group: 
   _data: {fileID: 11400000}
 --- !u!114 &-296040124441783389
 MonoBehaviour:
@@ -67,7 +69,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bfda56da833e2384a9677cd3c976a436, type: 3}
-  m_Name: Timeline
+  m_Name: SampleTimeline
   m_EditorClassIdentifier: 
   m_Version: 0
   m_Tracks: []
@@ -104,6 +106,7 @@ MonoBehaviour:
     - {fileID: 1394535311431477865}
     - {fileID: -6811954720164342472}
     - {fileID: 6920491699011907580}
+    - {fileID: 5063104958322454997}
 --- !u!114 &1394535311431477865
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -121,7 +124,29 @@ MonoBehaviour:
   _triggerInEditMode: 1
   _retroactive: 0
   _triggerOnce: 0
+  _group: SignalGroup
   _data: 1.23
+--- !u!114 &5063104958322454997
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0979c4d283884b1dbdef82f78f0746eb, type: 3}
+  m_Name: Data Signal Emitter/Float
+  m_EditorClassIdentifier: 
+  m_Time: 2.533333333333333
+  <parent>k__BackingField: {fileID: 621201973616677698}
+  _id: SignalID
+  _propertyName: SignalID
+  _data: 7.77
+  _triggerInEditMode: 1
+  _retroactive: 0
+  _triggerOnce: 0
+  _signalAsset: {fileID: 0}
 --- !u!114 &6920491699011907580
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -134,9 +159,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cd121540b4547b7b0c3db8cb22f2467, type: 3}
   m_Name: Signal/String
   m_EditorClassIdentifier: 
-  m_Time: 2.933333333333333
+  m_Time: 2.683333333333333
   _id: SignalID
-  _triggerInEditMode: 0
-  _retroactive: 0
-  _triggerOnce: 0
+  _triggerInEditMode: 1
+  _retroactive: 1
+  _triggerOnce: 1
+  _group: SignalGroup
   _data: Test

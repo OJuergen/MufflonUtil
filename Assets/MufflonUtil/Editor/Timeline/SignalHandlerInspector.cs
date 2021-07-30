@@ -42,7 +42,6 @@ namespace MufflonUtil
 
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.PropertyField(signalsProperty.GetArrayElementAtIndex(i));
-                GUI.tooltip = "test";
                 if (TimelineEditor.inspectedDirector != null && GUILayout.Button(new GUIContent("Select",
                     "Sets the timeline of the PlayableDirector to the one containing this signal and brings the inspector to that signal")))
                 {
@@ -93,7 +92,7 @@ namespace MufflonUtil
                 signalHandler.AddReactionTo(selectedSignal.Group);
             }
 
-            if (GUILayout.Button("Add New Signal Group Reaction")) signalHandler.AddReactionTo("");
+            if (selectedSignal == null && GUILayout.Button("Add New Signal Group Reaction")) signalHandler.AddReactionTo("");
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
 

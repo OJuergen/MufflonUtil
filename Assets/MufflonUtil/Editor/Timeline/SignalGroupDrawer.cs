@@ -12,14 +12,15 @@ namespace MufflonUtil
     [CustomPropertyDrawer(typeof(SignalGroupAttribute))]
     public class SignalGroupDrawer : PropertyDrawer
     {
-        private string[] _groups;
+        private static string[] _groups;
         private bool _addingNew;
         private string _newGroup;
         private GUIStyle _iconButtonStyle;
+        private bool _initialized;
 
-        private void FindGroups()
+        private string[] FindGroups()
         {
-            _groups = AssetDatabase.FindAssets("t:TimelineAsset")
+            return AssetDatabase.FindAssets("t:TimelineAsset")
                 .Select(AssetDatabase.GUIDToAssetPath)
                 .Select(AssetDatabase.LoadAssetAtPath<TimelineAsset>)
                 .SelectMany(timeline => timeline.GetOutputTracks())
@@ -33,9 +34,10 @@ namespace MufflonUtil
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (_groups == null || EditorUtility.IsDirty(property.serializedObject.targetObject))
+            if (_groups == null || !_initialized)
             {
-                FindGroups();
+                _groups = FindGroups();
+                _initialized = true;
             }
 
             if (!(attribute is SignalGroupAttribute signalGroupAttribute)) return;
@@ -53,6 +55,7 @@ namespace MufflonUtil
                 {
                     _addingNew = false;
                     property.stringValue = _newGroup;
+                    _initialized = false;
                     return;
                 }
 
@@ -77,6 +80,7 @@ namespace MufflonUtil
                 if (newIndex != index)
                 {
                     property.stringValue = newIndex == 0 ? null : _groups[newIndex - 1];
+                    _initialized = false;
                 }
 
                 // add new group button

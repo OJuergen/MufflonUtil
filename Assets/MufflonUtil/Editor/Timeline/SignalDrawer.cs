@@ -32,7 +32,7 @@ namespace MufflonUtil
             var signal = property.objectReferenceValue as Signal;
             if (signal == null) return;
 
-            if (_signals == null || EditorUtility.IsDirty(property.serializedObject.targetObject))
+            if (_signals == null)
             {
                 // Try to limit the type of proposed signals to the assignable type
                 var signalHandler = property.serializedObject.targetObject as SignalHandlerBase;

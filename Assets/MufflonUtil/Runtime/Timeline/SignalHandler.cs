@@ -122,10 +122,11 @@ namespace MufflonUtil
             }
 
             _signalGroupReactions = new Dictionary<string, TEvent>();
-            for (var i = 0; i < _signalGroups.Length && i < _groupReactions.Length; i++)
-            {
-                if (_signalGroups[i] != null) _signalGroupReactions[_signalGroups[i]] = _groupReactions[i];
-            }
+            if (_signalGroups != null && _groupReactions != null)
+                for (var i = 0; i < _signalGroups.Length && i < _groupReactions.Length; i++)
+                {
+                    if (_signalGroups[i] != null) _signalGroupReactions[_signalGroups[i]] = _groupReactions[i];
+                }
         }
     }
 

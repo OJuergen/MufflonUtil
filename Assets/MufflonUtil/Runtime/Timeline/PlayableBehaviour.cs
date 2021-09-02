@@ -6,6 +6,18 @@ using UnityEngine.Timeline;
 namespace MufflonUtil
 {
     /// <summary>
+    /// A <see cref="PlayableBehaviour{T}"/> with a weight that can be set by a track mixer.
+    /// </summary>
+    /// <typeparam name="T">The type of the player data</typeparam>
+    public class WeightedPlayableBehaviour<T> : PlayableBehaviour<T> where T : Component
+    {
+        /// <summary>
+        /// The weight of this playable set by the mixer.
+        /// </summary>
+        public float Weight { get; set; }
+    }
+    
+    /// <summary>
     /// Utility wrapper for <see cref="PlayableBehaviour"/> with player data of type <typeparamref name="T"/>.
     /// Must be attached to a <see cref="TrackAsset"/> with a <see cref="TrackBindingTypeAttribute"/>
     /// with type <typeparamref name="T"/>. 

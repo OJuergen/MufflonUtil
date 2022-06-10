@@ -3,6 +3,6 @@
 namespace MufflonUtil.Samples
 {
     [CreateAssetMenu(fileName = "SampleManagedAsset", menuName = "MufflonUtil/Samples/Managed Asset")]
-    public class SampleManagedAsset : ManagedAsset
+    public class SampleManagedAsset : ScriptableObjectWithGUID, IManagedAsset
     { }
 }

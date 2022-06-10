@@ -15,16 +15,16 @@ namespace MufflonUtil
 
     /// <summary>
     /// A database for assets of type <typeparamref name="TAsset"/>.
-    /// Used for referencing <see cref="GetID"/>s over the network.
-    /// Assets are assigned an id which can be retrieved using <see cref="Get"/>.
-    /// In turn, the ID can be used to retrieve the asset using <see cref="ScriptableObjectSingleton"/>.
+    /// Can be used for referencing <see cref="ScriptableObject"/>s over the network.
+    /// Assets are assigned an id which can be retrieved using <see cref="GetID"/>.
+    /// In turn, the ID can be used to retrieve the asset using <see cref="Get"/>.
     /// <br/>
     /// Implements <see cref="ScriptableObjectSingleton"/>.
     /// </summary>
     /// <typeparam name="TManager">The type of the manager class. Needed for the <see cref="ScriptableObjectSingleton"/> implementation.</typeparam>
     /// <typeparam name="TAsset">The type of the managed assets.</typeparam>
     public abstract class AssetManager<TManager, TAsset> : ScriptableObjectSingleton<TManager>, IAssetManager
-        where TAsset : ManagedAsset where TManager : AssetManager<TManager, TAsset>
+        where TAsset : ScriptableObject, IManagedAsset where TManager : AssetManager<TManager, TAsset>
     {
         [SerializeField] private List<TAsset> _assets = new List<TAsset>();
         private readonly Dictionary<TAsset, int> _idByAsset = new Dictionary<TAsset, int>();
@@ -92,10 +92,10 @@ namespace MufflonUtil
         public void FindAssets()
         {
             _assets = UnityEditor.AssetDatabase
-                .FindAssets("t:ManagedAsset")
+                .FindAssets("t:ScriptableObject")
                 .Select(UnityEditor.AssetDatabase.GUIDToAssetPath)
                 .Where(path => path.StartsWith("Assets/")) // exclude package assets
-                .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<ManagedAsset>)
+                .Select(UnityEditor.AssetDatabase.LoadAssetAtPath<ScriptableObject>)
                 .OfType<TAsset>()
                 .OrderBy(a => a.name)
                 .ToList();

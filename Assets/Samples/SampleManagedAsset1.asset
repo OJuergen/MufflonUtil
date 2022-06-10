@@ -10,5 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7301f59f35ca98843bcacd33fb38a5cd, type: 3}
-  m_Name: SampleManagedAsset3
+  m_Name: SampleManagedAsset1
   m_EditorClassIdentifier: 
+  <GUID>k__BackingField: 5c56a68d407c1d54a804139d783354fe

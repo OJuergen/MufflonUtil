@@ -48,8 +48,8 @@ namespace MufflonUtil
             {
                 PlayableDirector playableDirector = timelineController.PlayableDirector;
                 if (playableDirector == null) return;
-                bool inClip = playableDirector.time - info.deltaTime >= _time &&
-                              playableDirector.time - info.deltaTime <= _time + playable.GetDuration();
+                bool inClip = playableDirector.time - info.effectiveSpeed * info.deltaTime >= _time &&
+                              playableDirector.time - info.effectiveSpeed * info.deltaTime <= _time + playable.GetDuration();
                 // Debug.Log($"Loop clip stopped: isBroken {_broken}, director state: {playableDirector.state}, inClip: {inClip}, deltaTime: {info.deltaTime}");
                 if (!_broken && playableDirector.state == PlayState.Playing && inClip) playableDirector.time = _time;
                 else timelineController.BreakingLoop -= Break;

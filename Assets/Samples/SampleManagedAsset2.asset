@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7301f59f35ca98843bcacd33fb38a5cd, type: 3}
   m_Name: SampleManagedAsset2
   m_EditorClassIdentifier: 
+  <GUID>k__BackingField: ce8315e9af31fd94cba77350182a9867

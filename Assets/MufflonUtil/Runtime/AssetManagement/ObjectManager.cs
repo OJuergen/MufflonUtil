@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MufflonUtil
@@ -53,6 +54,26 @@ namespace MufflonUtil
         public IEnumerable<T> GetAll()
         {
             return _registeredObjects.Values;
+        }
+        
+        public T GetClosest(Vector3 position, float maxDistance = float.PositiveInfinity)
+        {
+            return GetAll()
+                .Select(obj => (obj, Distance: Vector3.Distance(obj.transform.position, position)))
+                .Where(args => args.Distance < maxDistance)
+                .OrderBy(args => args.Distance)
+                .Select(args => args.obj)
+                .FirstOrDefault();
+        }
+
+        public T GetClosest(Ray ray, float maxDistance = float.PositiveInfinity)
+        {
+            return GetAll()
+                .Select(obj => (obj, Distance: Vector3.ProjectOnPlane(obj.transform.position - ray.origin, ray.direction).magnitude))
+                .Where(args => args.Distance < maxDistance)
+                .OrderBy(args => args.Distance)
+                .Select(args => args.obj)
+                .FirstOrDefault();
         }
     }
 }

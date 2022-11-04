@@ -55,6 +55,11 @@ namespace MufflonUtil
         {
             return _registeredObjects.Values;
         }
+
+        public T GetRandom()
+        {
+            return _registeredObjects.Values.ElementAtOrDefault(Random.Range(0, _registeredObjects.Count));
+        }
         
         public T GetClosest(Vector3 position, float maxDistance = float.PositiveInfinity)
         {

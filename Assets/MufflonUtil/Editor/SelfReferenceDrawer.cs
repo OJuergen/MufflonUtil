@@ -94,7 +94,7 @@ namespace MufflonUtil
         {
             if (typeof(Component).IsAssignableFrom(fieldInfo.FieldType))
             {
-                HashSet<Component> components = target.GetComponents(fieldInfo.FieldType).ToHashSet();
+                HashSet<Component> components = target.GetComponents(fieldInfo.FieldType).MakeHashSet();
                 if (children)
                     components.UnionWith(target.GetComponentsInChildren(fieldInfo.FieldType, true));
                 if (parents)

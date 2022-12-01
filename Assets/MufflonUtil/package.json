@@ -1,8 +1,8 @@
 {
   "name": "com.mufflonzucht.mufflonutil",
   "displayName": "Mufflonzucht Utility",
-  "version": "0.3.1",
-  "unity": "2019.3",
+  "version": "0.3.2",
+  "unity": "2020.1",
   "description": "Various utility components and functions like. \nFor example singletons and object pools, extensions for Timeline, Mecanim and more.",
   "type": "library",
   "dependencies": {

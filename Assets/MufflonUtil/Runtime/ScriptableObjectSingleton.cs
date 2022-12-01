@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace MufflonUtil
@@ -31,6 +32,12 @@ namespace MufflonUtil
         {
 #if UNITY_EDITOR
             AssetPostProcessor.ImportedScriptableObject += OnScriptableObjectImported;
+            HashSet<Object> preloadedAssets = UnityEditor.PlayerSettings.GetPreloadedAssets().MakeHashSet();
+            if (!preloadedAssets.Contains(this))
+            {
+                preloadedAssets.Add(this);
+                UnityEditor.PlayerSettings.SetPreloadedAssets(preloadedAssets.ToArray());
+            }
 #endif
         }
 

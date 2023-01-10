@@ -4,10 +4,12 @@ using UnityEngine.Playables;
 
 namespace MufflonUtil
 {
-    public class AnimatorFloatPlayable : AnimatorTrack.PlayableAsset<AnimatorFloatPlayable.PlayableBehaviour>
+    public class AnimatorFloatClip : AnimatorTrack.AnimatorClipAsset<AnimatorFloatClip.Behaviour>
     {
+        [field:SerializeField] protected override Behaviour Template { get; set; }
+
         [Serializable]
-        public class PlayableBehaviour : AnimatorTrack.PlayableBehaviour
+        public class Behaviour : AnimatorTrack.AnimatorClipBehaviour
         {
             [SerializeField] private string _parameter;
             [SerializeField] private float _value;
@@ -21,7 +23,7 @@ namespace MufflonUtil
                 Keep
             }
 
-            protected override void OnBehaviourUpdate(Playable playable, FrameData info, Animator playerData)
+            protected override void OnUpdate(Playable playable, FrameData info, Animator playerData)
             {
                 if (_parameterHash == 0)
                 {
@@ -32,7 +34,7 @@ namespace MufflonUtil
                 Context.SetFloat(_parameterHash, _value);
             }
 
-            protected override void OnBehaviourStop(Playable playable, FrameData info, Animator playerData)
+            protected override void OnStop(Playable playable, FrameData info, Animator playerData)
             {
                 if (_endPolicy == EndPolicy.Previous)
                 {

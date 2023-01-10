@@ -13,6 +13,11 @@ namespace MufflonUtil
         public event Action BreakingLoop;
         public event Action Jumping;
 
+        private void OnValidate()
+        {
+            if (_playableDirector == null) _playableDirector = GetComponent<PlayableDirector>();
+        }
+
         [ContextMenu("Break Loop")]
         public void BreakLoop()
         {

@@ -1,70 +1,58 @@
-using System;
 using System.ComponentModel;
-using UnityEngine;
 using UnityEngine.Playables;
 
 namespace MufflonUtil
 {
     [DisplayName("Timeline Control/Loop Clip")]
-    public class LoopPlayable : PlayableAsset, ITimelineControllerPlayableAsset
+    public class LoopClip : TimelineControllerTrack.TimelineControllerClipAsset<LoopClip.Behaviour>
     {
-        [SerializeField] private LoopBehaviour _template;
+        protected override Behaviour Template { get; set; }
 
-        public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
+        public class Behaviour : TimelineControllerTrack.ClipBehaviour
         {
-            return ScriptPlayable<LoopBehaviour>.Create(graph, _template);
-        }
-
-        [Serializable]
-        public class LoopBehaviour : PlayableBehaviour<TimelineController>
-        {
-            private float _time;
             private bool _isInitialized;
             private bool _broken;
             private DirectorWrapMode _directorWrapMode;
             private PlayableAsset _playableAsset;
 
-            public void Break()
+            private void Break()
             {
                 _broken = true;
+                Context.PlayableDirector.extrapolationMode = _directorWrapMode;
             }
 
-            protected override void OnBehaviourStart(TimelineController timelineController)
+            protected override void OnStart(TimelineController timelineController)
             {
+                _broken = false;
+                _isInitialized = false;
                 PlayableDirector playableDirector = timelineController.PlayableDirector;
                 _playableAsset = playableDirector.playableAsset;
-                _isInitialized = false;
                 _directorWrapMode = playableDirector.extrapolationMode;
                 // prevent director from stopping when timeline ends with loop
                 playableDirector.extrapolationMode = DirectorWrapMode.Hold;
             }
 
-            protected override void OnBehaviourUpdate(Playable playable, FrameData info,
-                TimelineController timelineController)
+            protected override void OnUpdate(Playable playable, FrameData info, TimelineController timelineController)
             {
                 if (!_isInitialized)
                 {
-                    _time = (float) timelineController.PlayableDirector.time;
                     _isInitialized = true;
                     timelineController.BreakingLoop += Break;
                 }
 
-                bool isOutOfClipNextFrame = timelineController.PlayableDirector.time - _time + info.deltaTime > playable.GetDuration();
-                if(!_broken && isOutOfClipNextFrame) timelineController.PlayableDirector.time = _time;
+                bool isOutOfClipNextFrame = timelineController.PlayableDirector.time + info.deltaTime > Clip.end;
+                if (!_broken && isOutOfClipNextFrame) timelineController.PlayableDirector.time = Clip.start;
             }
 
-            protected override void OnBehaviourStop(Playable playable, FrameData info,
+            protected override void OnStop(Playable playable, FrameData info,
                 TimelineController timelineController)
             {
                 PlayableDirector playableDirector = timelineController.PlayableDirector;
                 if (playableDirector == null) return;
-                bool inClip = playableDirector.time - info.effectiveSpeed * info.deltaTime >= _time &&
-                              playableDirector.time - info.effectiveSpeed * info.deltaTime <= _time + playable.GetDuration();
-                // Debug.Log($"Loop clip stopped: isBroken {_broken}, director state: {playableDirector.state}, inClip: {inClip}, deltaTime: {info.deltaTime}");
                 if (!_broken && playableDirector.state == PlayState.Playing &&
                     playableDirector.playableAsset == _playableAsset)
                 {
-                    playableDirector.time = _time;
+                    playableDirector.time = Clip.start;
                 }
                 else
                 {

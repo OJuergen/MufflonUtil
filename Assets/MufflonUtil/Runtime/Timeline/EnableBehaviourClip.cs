@@ -6,22 +6,24 @@ using UnityEngine.Playables;
 namespace MufflonUtil
 {
     [DisplayName("Enable Behaviour")]
-    public class EnableBehaviourPlayable : BehaviourTrack.PlayableAsset<EnableBehaviourPlayable.PlayableBehaviour>
+    public class EnableBehaviourClip : BehaviourTrack.BehaviourClipAsset<EnableBehaviourClip.Behaviour>
     {
+        [field:SerializeField] protected override Behaviour Template { get; set; }
+
         [Serializable]
-        public class PlayableBehaviour : BehaviourTrack.Behaviour
+        public class Behaviour : BehaviourTrack.ClipBehaviour
         {
             [SerializeField] private PostPlaybackBehaviour _postPlaybackBehaviour;
             [SerializeField] private bool _isEnabled;
             private bool _wasEnabled;
 
-            protected override void OnBehaviourStart(Behaviour behaviour)
+            protected override void OnStart(UnityEngine.Behaviour behaviour)
             {
                 _wasEnabled = behaviour.enabled;
                 behaviour.enabled = _isEnabled;
             }
 
-            protected override void OnBehaviourStop(Playable playable, FrameData info, Behaviour behaviour)
+            protected override void OnStop(Playable playable, FrameData info, UnityEngine.Behaviour behaviour)
             {
                 switch (_postPlaybackBehaviour)
                 {

@@ -3,20 +3,20 @@ using UnityEngine.Timeline;
 
 namespace MufflonUtil
 {
-    [TrackClipType(typeof(IPlayableAsset))]
     [TrackBindingType(typeof(Animator))]
     [TrackColor(0.25f, 1f, 0.75f)]
-    public class AnimatorTrack : TrackAsset
+    [TrackClipType(typeof(IClipType))]
+    public class AnimatorTrack : TimelineTrack<Animator>
     {
-        private interface IPlayableAsset
-        { }
-
-        public class PlayableAsset<T> : PlayableAsset<Animator, T>, IPlayableAsset where T : PlayableBehaviour, new()
-        { }
-
-        public class PlayableBehaviour : PlayableBehaviour<Animator>
+        public class AnimatorClipBehaviour : ClipBehaviour
         {
             protected Animator Animator => Context;
         }
+
+        private interface IClipType
+        { }
+
+        public abstract class AnimatorClipAsset<T> : ClipAsset<T>, IClipType where T : AnimatorClipBehaviour, new()
+        { }
     }
 }

@@ -6,29 +6,19 @@ using UnityEngine.Timeline;
 namespace MufflonUtil
 {
     /// <summary>
-    /// A <see cref="PlayableBehaviour{T}"/> with a weight that can be set by a track mixer.
-    /// </summary>
-    /// <typeparam name="T">The type of the player data</typeparam>
-    public class WeightedPlayableBehaviour<T> : PlayableBehaviour<T> where T : Component
-    {
-        /// <summary>
-        /// The weight of this playable set by the mixer.
-        /// </summary>
-        public float Weight { get; set; }
-    }
-    
-    /// <summary>
-    /// Utility wrapper for <see cref="PlayableBehaviour"/> with player data of type <typeparamref name="T"/>.
+    /// Utility wrapper for <see cref="PlayableBehaviour"/> with player data of type <typeparamref name="T"/>
+    /// and a reference to the <see cref="TimelineClip"/>.
     /// Must be attached to a <see cref="TrackAsset"/> with a <see cref="TrackBindingTypeAttribute"/>
-    /// with type <typeparamref name="T"/>. 
+    /// of type <typeparamref name="T"/>. 
     /// </summary>
-    /// <typeparam name="T">The type of the player data</typeparam>
-    public class PlayableBehaviour<T> : PlayableBehaviour where T : Component
+    /// <typeparam name="T">The type of the player data bound to the track.</typeparam>
+    public abstract class TimelineClipBehaviour<T> : PlayableBehaviour where T : Component
     {
         /// <summary>
         /// The object bound to the track. Available after the first frame was processed.
         /// </summary>
         protected T Context { get; private set; }
+        public TimelineClip Clip { get; set; }
         private bool _initialized;
 
         public sealed override void ProcessFrame(Playable playable, FrameData info, object playerData)
@@ -41,20 +31,20 @@ namespace MufflonUtil
             }
             if (!_initialized)
             {
-                OnBehaviourStart(Context);
+                OnStart(Context);
                 _initialized = true;
             }
 
-            OnBehaviourUpdate(playable, info, Context);
+            OnUpdate(playable, info, Context);
         }
 
         /// <summary>
         /// Called once
         /// </summary>
-        protected virtual void OnBehaviourStart([NotNull] T playerData)
+        protected virtual void OnStart([NotNull] T playerData)
         { }
 
-        protected virtual void OnBehaviourUpdate(Playable playable, FrameData info, [NotNull] T playerData)
+        protected virtual void OnUpdate(Playable playable, FrameData info, [NotNull] T playerData)
         { }
 
         public sealed override void OnBehaviourPause(Playable playable, FrameData info)
@@ -62,11 +52,11 @@ namespace MufflonUtil
             if (_initialized)
             {
                 _initialized = false;
-                if (Context != null) OnBehaviourStop(playable, info, Context);
+                if (Context != null) OnStop(playable, info, Context);
             }
         }
 
-        protected virtual void OnBehaviourStop(Playable playable, FrameData info, [NotNull] T playerData)
+        protected virtual void OnStop(Playable playable, FrameData info, [NotNull] T playerData)
         { }
     }
 }

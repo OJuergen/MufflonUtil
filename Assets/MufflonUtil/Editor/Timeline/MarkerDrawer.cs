@@ -13,29 +13,21 @@ namespace MufflonUtil
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var monoBehaviour = property.serializedObject.targetObject as MonoBehaviour;
-            if (monoBehaviour == null)
+            var clipAsset = property.serializedObject.targetObject as TimelineTrack.ClipAsset;
+            if (clipAsset == null)
             {
-                EditorGUI.HelpBox(position, "[MarkerFromTimeline] attribute is only supported for MonoBehaviour",
+                EditorGUI.HelpBox(position, "[MarkerFromTimeline] attribute is only supported for ClipAsset",
                     MessageType.Error);
                 return;
             }
 
-            var playableDirector = monoBehaviour.GetComponent<PlayableDirector>();
-            if (playableDirector == null)
-            {
-                EditorGUI.HelpBox(position, "Must attach PlayableDirector component", MessageType.Warning);
-                return;
-            }
-
             var marker = property.objectReferenceValue as Marker;
-            var timelineAsset = playableDirector.playableAsset as TimelineAsset;
-            if (timelineAsset == null) return;
-            Marker[] markers = timelineAsset.markerTrack.GetMarkers()
+            if (clipAsset.Clip == null || clipAsset.Clip.GetParentTrack() == null) return;
+            Marker[] markers = clipAsset.Clip.GetParentTrack().GetMarkers()
                 .Where(m => m is INotification || m is Marker)
                 .Cast<Marker>()
                 .ToArray();
-            var options = new List<GUIContent> {new GUIContent("[None]")};
+            var options = new List<GUIContent> {new("[None]")};
             options.AddRange(markers.Select(m => new GUIContent(m.name)));
             int index = Array.IndexOf(markers, marker) + 1;
             label = EditorGUI.BeginProperty(position, label, property);

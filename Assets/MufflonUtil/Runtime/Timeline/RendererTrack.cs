@@ -3,18 +3,15 @@ using UnityEngine.Timeline;
 
 namespace MufflonUtil
 {
-    [TrackClipType(typeof(IPlayableAsset))]
-    [TrackBindingType(typeof(Renderer))]
     [TrackColor(1f, .5f, 0f)]
-    public class RendererTrack : TrackAsset
+    [TrackBindingType(typeof(Renderer))]
+    [TrackClipType(typeof(IClipType))]
+    public class RendererTrack : TimelineTrack<Renderer>
     {
-        private interface IPlayableAsset
+        private interface IClipType
         { }
 
-        public class PlayableAsset<T> : PlayableAsset<Renderer, T>, IPlayableAsset where T : Behaviour, new()
-        { }
-
-        public class Behaviour : PlayableBehaviour<Renderer>
+        public abstract class RendererClipAsset<T> : ClipAsset<T>, IClipType where T : ClipBehaviour, new()
         { }
     }
 }

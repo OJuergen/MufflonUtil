@@ -4,10 +4,12 @@ using UnityEngine.Playables;
 
 namespace MufflonUtil
 {
-    public class AnimatorPausePlayable : AnimatorTrack.PlayableAsset<AnimatorPausePlayable.PlayableBehaviour>
+    public class AnimatorPauseClip : AnimatorTrack.AnimatorClipAsset<AnimatorPauseClip.Behaviour>
     {
+        [field:SerializeField] protected override Behaviour Template { get; set; }
+
         [Serializable]
-        public class PlayableBehaviour : AnimatorTrack.PlayableBehaviour
+        public class Behaviour : AnimatorTrack.AnimatorClipBehaviour
         {
             [SerializeField] private EndPolicy _endPolicy = EndPolicy.Previous;
             private bool _previousValue;
@@ -18,13 +20,13 @@ namespace MufflonUtil
                 Keep
             }
 
-            protected override void OnBehaviourStart(Animator animator)
+            protected override void OnStart(Animator animator)
             {
                 _previousValue = Animator.enabled;
-                if(Application.isPlaying) Animator.enabled = false;
+                if (Application.isPlaying) Animator.enabled = false;
             }
 
-            protected override void OnBehaviourStop(Playable playable, FrameData info, Animator animator)
+            protected override void OnStop(Playable playable, FrameData info, Animator animator)
             {
                 if (Application.isPlaying && _endPolicy == EndPolicy.Previous)
                     animator.enabled = _previousValue;

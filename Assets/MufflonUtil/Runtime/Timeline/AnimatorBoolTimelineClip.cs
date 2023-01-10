@@ -4,10 +4,12 @@ using UnityEngine.Playables;
 
 namespace MufflonUtil
 {
-    public class AnimatorBoolPlayable : AnimatorTrack.PlayableAsset<AnimatorBoolPlayable.PlayableBehaviour>
+    public class AnimatorBoolClip : AnimatorTrack.AnimatorClipAsset<AnimatorBoolClip.Behaviour>
     {
+        [field:SerializeField] protected override Behaviour Template { get; set; }
+
         [Serializable]
-        public class PlayableBehaviour : AnimatorTrack.PlayableBehaviour
+        public class Behaviour : AnimatorTrack.AnimatorClipBehaviour
         {
             [SerializeField] private string _parameter;
             [SerializeField] private bool _value;
@@ -22,18 +24,18 @@ namespace MufflonUtil
                 Previous
             }
 
-            protected override void OnBehaviourUpdate(Playable playable, FrameData info, Animator playerData)
+            protected override void OnUpdate(Playable playable, FrameData info, Animator playerData)
             {
                 if (_parameterHash == 0)
                 {
                     _parameterHash = Animator.StringToHash(_parameter);
-                    if(Application.isPlaying) _previousValue = Context.GetBool(_parameterHash);
+                    if (Application.isPlaying) _previousValue = Context.GetBool(_parameterHash);
                 }
 
-                if(Application.isPlaying) Context.SetBool(_parameterHash, _value);
+                if (Application.isPlaying) Context.SetBool(_parameterHash, _value);
             }
 
-            protected override void OnBehaviourStop(Playable playable, FrameData info, Animator playerData)
+            protected override void OnStop(Playable playable, FrameData info, Animator playerData)
             {
                 if (_endPolicy == EndPolicy.Previous && Context != null && Application.isPlaying)
                     Context.SetBool(_parameterHash, _previousValue);

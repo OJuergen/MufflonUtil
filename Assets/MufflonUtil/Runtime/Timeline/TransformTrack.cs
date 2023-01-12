@@ -47,7 +47,7 @@ namespace MufflonUtil
             [SerializeField, Tooltip("If checked, updates to transform will be smoothed by a lerp")]
             private bool _doLerp;
 
-            [SerializeField, ConditionallyVisible(nameof(_doLerp)), Tooltip("Lerp amount per second.")]
+            [SerializeField, Tooltip("Lerp amount per second.")]
             private float _lerpFactor;
 
             [SerializeField, Tooltip("If checked, behaviour will be previewed in edit mode.")]

@@ -3,12 +3,12 @@ using UnityEngine.Playables;
 
 namespace MufflonUtil
 {
-    [DisplayName("Timeline Control/Loop Clip")]
-    public class LoopClip : TimelineControllerTrack.TimelineControllerClipAsset<LoopClip.Behaviour>
+    [DisplayName("Timeline Control/Loop")]
+    public class LoopClip : TimelineControllerTrack.Clip<LoopClip.Behaviour>
     {
         protected override Behaviour Template { get; set; }
 
-        public class Behaviour : TimelineControllerTrack.ClipBehaviour
+        public class Behaviour : TimelineControllerTrack.Behaviour
         {
             private bool _isInitialized;
             private bool _broken;

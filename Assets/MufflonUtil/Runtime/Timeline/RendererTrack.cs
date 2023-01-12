@@ -11,7 +11,7 @@ namespace MufflonUtil
         private interface IClipType
         { }
 
-        public abstract class RendererClipAsset<T> : ClipAsset<T>, IClipType where T : ClipBehaviour, new()
+        public abstract class RendererClipPlayableAsset<T> : ClipPlayableAsset<T>, IClipType where T : Behaviour, new()
         { }
     }
 }

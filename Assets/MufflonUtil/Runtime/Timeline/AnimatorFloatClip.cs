@@ -4,12 +4,12 @@ using UnityEngine.Playables;
 
 namespace MufflonUtil
 {
-    public class AnimatorFloatClip : AnimatorTrack.AnimatorClipAsset<AnimatorFloatClip.Behaviour>
+    public class FloatClip : AnimatorTrack.Clip<FloatClip.Behaviour>
     {
         [field:SerializeField] protected override Behaviour Template { get; set; }
 
         [Serializable]
-        public class Behaviour : AnimatorTrack.AnimatorClipBehaviour
+        public class Behaviour : AnimatorTrack.AnimatorBehaviour
         {
             [SerializeField] private string _parameter;
             [SerializeField] private float _value;

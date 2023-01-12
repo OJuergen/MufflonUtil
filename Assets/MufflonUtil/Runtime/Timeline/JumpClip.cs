@@ -5,13 +5,13 @@ using UnityEngine.Playables;
 
 namespace MufflonUtil
 {
-    [DisplayName("Timeline Control/Jump Clip")]
-    public class JumpClip : TimelineControllerTrack.TimelineControllerClipAsset<JumpClip.Behaviour>
+    [DisplayName("Timeline Control/Jump")]
+    public class JumpClip : TimelineControllerTrack.Clip<JumpClip.Behaviour>
     {
         [field:SerializeField] protected override Behaviour Template { get; set; }
 
         [Serializable]
-        public class Behaviour : TimelineControllerTrack.ClipBehaviour
+        public class Behaviour : TimelineControllerTrack.Behaviour
         {
             private bool _isInitialized;
             [SerializeField, MarkerFromTimeline] private JumpMarker _marker;

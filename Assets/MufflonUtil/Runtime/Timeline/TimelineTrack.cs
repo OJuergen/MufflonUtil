@@ -6,76 +6,47 @@ using UnityEngine.Timeline;
 namespace MufflonUtil
 {
     /// <summary>
-    /// Base class for custom timeline tracks.
+    /// Base class for custom <see cref="TrackAsset"/>s that pass on the reference to the <see cref="TimelineClip"/>
+    /// to the associated <see cref="ClipPlayableAsset"/> when creating <see cref="Playable"/>s.
     /// </summary>
     [TrackColor(1f, 1f, 1f)]
     [Serializable]
     public abstract class TimelineTrack : TrackAsset
     {
-        public abstract class ClipAsset : PlayableAsset
+        protected override Playable CreatePlayable(PlayableGraph graph, GameObject gameObject, TimelineClip clip)
         {
-            public TimelineClip Clip { get; set; }
+            var timelineClipAsset = clip.asset as ClipPlayableAsset;
+            if (timelineClipAsset != null) timelineClipAsset.Clip = clip;
+            return base.CreatePlayable(graph, gameObject, clip);
         }
     }
 
-    public abstract class
-        TimelineTrack<TComponent> : TimelineTrack<TComponent, TimelineTrack<TComponent>.MixerBehaviour>
+    /// <summary>
+    /// Base class for custom <see cref="TimelineTrack"/>s with a predefined <see cref="Behaviour"/> class for
+    /// <see cref="TimelineBehaviour{T}"/> with the bound <see cref="TComponent"/> type.
+    /// </summary>
+    /// <typeparam name="TComponent">The type of the component bound to the track.</typeparam>
+    public abstract class TimelineTrack<TComponent> : TimelineTrack
         where TComponent : Component
     {
-        public class MixerBehaviour : TimelineClipBehaviour<TComponent>
-        {
-            protected override void OnUpdate(Playable playable, FrameData info, TComponent playerData)
-            {
-                for (var i = 0; i < playable.GetInputCount(); i++)
-                {
-                    var input = (ScriptPlayable<ClipBehaviour>)playable.GetInput(i);
-                    ClipBehaviour clipBehaviour = input.GetBehaviour();
-                    clipBehaviour.ProcessFrame(playable, info, playerData);
-                }
-            }
-        }
+        public abstract class Behaviour : TimelineBehaviour<TComponent>
+        { }
     }
 
-    public abstract class TimelineTrack<TComponent, TMixerBehaviour> : TimelineTrack
+    /// <summary>
+    /// Base class for <see cref="TimelineTrack{T}"/>s with a custom mixer behaviour of their own. 
+    /// </summary>
+    /// <typeparam name="TComponent">The type of the component bound to the track.</typeparam>
+    /// <typeparam name="TMixerBehaviour">The type of the mixer behaviour of the track.</typeparam>
+    public abstract class TimelineTrack<TComponent, TMixerBehaviour> : TimelineTrack<TComponent>
         where TComponent : Component
-        where TMixerBehaviour : TimelineTrack<TComponent>.MixerBehaviour, new()
+        where TMixerBehaviour : MixerBehaviour<TComponent>, new()
     {
         [SerializeField] private TMixerBehaviour _mixer;
 
         public override Playable CreateTrackMixer(PlayableGraph graph, GameObject go, int inputCount)
         {
             return ScriptPlayable<TMixerBehaviour>.Create(graph, _mixer, inputCount);
-        }
-
-        protected override Playable CreatePlayable(PlayableGraph graph, GameObject gameObject, TimelineClip clip)
-        {
-            var timelineClipAsset = clip.asset as ClipAsset;
-            if (timelineClipAsset != null) timelineClipAsset.Clip = clip;
-            return base.CreatePlayable(graph, gameObject, clip);
-        }
-
-        public class ClipBehaviour : TimelineClipBehaviour<TComponent>
-        { }
-
-        /// <summary>
-        /// Utility wrapper for <see cref="PlayableAsset"/> that creates a <see cref="ScriptPlayable{T}"/>
-        /// from a template.
-        /// In order to allow animating the values of the <see cref="Template"/>, the inheriting class needs to
-        /// provide a serialized field of type <see cref="TBehaviour"/> and have <see cref="Template"/> return this.
-        /// </summary>
-        public abstract class ClipAsset<TBehaviour> : ClipAsset where TBehaviour : ClipBehaviour, new()
-        {
-            /// <summary>
-            /// Override this with a serialized backing field to configure properties in the editor.
-            /// </summary>
-            protected abstract TBehaviour Template { get; set; }
-
-            public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
-            {
-                if (Template == null) Template = new TBehaviour();
-                Template.Clip = Clip;
-                return ScriptPlayable<TBehaviour>.Create(graph, Template);
-            }
         }
     }
 }

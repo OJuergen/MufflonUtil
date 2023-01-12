@@ -3,7 +3,7 @@ using UnityEngine.Timeline;
 
 namespace MufflonUtil
 {
-    [TrackBindingType(typeof(Behaviour))]
+    [TrackBindingType(typeof(UnityEngine.Behaviour))]
     [TrackColor(.5f, 1f, .5f)]
     [TrackClipType(typeof(IClipType))]
     public class BehaviourTrack : TimelineTrack<Behaviour>
@@ -11,7 +11,7 @@ namespace MufflonUtil
         private interface IClipType
         { }
 
-        public abstract class BehaviourClipAsset<T> : ClipAsset<T>, IClipType where T : ClipBehaviour, new()
+        public abstract class Clip<T> : ClipPlayableAsset<T>, IClipType where T : Behaviour, new()
         { }
     }
 }

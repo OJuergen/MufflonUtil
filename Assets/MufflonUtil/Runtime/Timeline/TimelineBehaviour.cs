@@ -6,21 +6,26 @@ using UnityEngine.Timeline;
 namespace MufflonUtil
 {
     /// <summary>
-    /// Utility wrapper for <see cref="PlayableBehaviour"/> with player data of type <typeparamref name="T"/>
-    /// and a reference to the <see cref="TimelineClip"/>.
+    /// base class of a <see cref="PlayableBehaviour"/> with a reference to a <see cref="TimelineClip"/>.
+    /// </summary>
+    public abstract class TimelineBehaviour : PlayableBehaviour
+    {
+        public TimelineClip Clip { get; set; }
+    }
+    
+    /// <summary>
+    /// Base class of a <see cref="TimelineBehaviour"/> with player data of type <typeparamref name="T"/>.
     /// Must be attached to a <see cref="TrackAsset"/> with a <see cref="TrackBindingTypeAttribute"/>
     /// of type <typeparamref name="T"/>. 
     /// </summary>
     /// <typeparam name="T">The type of the player data bound to the track.</typeparam>
-    public abstract class TimelineClipBehaviour<T> : PlayableBehaviour where T : Component
+    public abstract class TimelineBehaviour<T> : TimelineBehaviour where T : Component
     {
         /// <summary>
         /// The object bound to the track. Available after the first frame was processed.
         /// </summary>
         protected T Context { get; private set; }
-        public TimelineClip Clip { get; set; }
         private bool _initialized;
-
         public sealed override void ProcessFrame(Playable playable, FrameData info, object playerData)
         {
             Context = playerData as T;

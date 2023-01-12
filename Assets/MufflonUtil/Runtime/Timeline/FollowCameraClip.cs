@@ -5,15 +5,15 @@ using UnityEngine.Playables;
 namespace MufflonUtil
 {
     [Serializable]
-    internal class FollowCameraClip : TransformTrack.TransformClipAsset<FollowCameraClip.Behaviour>
+    internal class FollowCameraClip : TransformTrack.Clip<FollowCameraClip.Behaviour>
     {
         [field:SerializeField] protected override Behaviour Template { get; set; }
         
         [Serializable]
-        internal class Behaviour : TransformTrack.TransformClipBehaviour
+        internal class Behaviour : TransformTrack.TransformBehaviour
         {
             [SerializeField] private Vector3 _relativeSetpointPosition = new(0, -0.1f, 0.5f);
-            [SerializeField] private bool _faceAwayFromCamera;
+            [SerializeField] private Quaternion _relativeSetpointRotation = Quaternion.identity;
             private Transform _mainCamTransform;
 
             protected override void OnStart(Transform transform)
@@ -30,10 +30,7 @@ namespace MufflonUtil
                 Vector3 currentPosition = transform.position;
                 Vector3 cameraPosition = _mainCamTransform.position;
 
-                Quaternion lookRotation = _faceAwayFromCamera 
-                    ? Quaternion.LookRotation(currentPosition - cameraPosition)
-                    : Quaternion.LookRotation(cameraPosition - currentPosition);
-                Rotation = Quaternion.Euler(0, lookRotation.eulerAngles.y, 0);
+                Rotation = _relativeSetpointRotation * Quaternion.LookRotation(cameraPosition - currentPosition);
                 Scale = transform.localScale;
             }
 

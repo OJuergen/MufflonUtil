@@ -4,12 +4,12 @@ using UnityEngine.Playables;
 
 namespace MufflonUtil
 {
-    public class AnimatorPauseClip : AnimatorTrack.AnimatorClipAsset<AnimatorPauseClip.Behaviour>
+    public class PauseClip : AnimatorTrack.Clip<PauseClip.Behaviour>
     {
         [field:SerializeField] protected override Behaviour Template { get; set; }
 
         [Serializable]
-        public class Behaviour : AnimatorTrack.AnimatorClipBehaviour
+        public class Behaviour : AnimatorTrack.AnimatorBehaviour
         {
             [SerializeField] private EndPolicy _endPolicy = EndPolicy.Previous;
             private bool _previousValue;

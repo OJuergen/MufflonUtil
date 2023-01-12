@@ -13,7 +13,7 @@ namespace MufflonUtil
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            var clipAsset = property.serializedObject.targetObject as TimelineTrack.ClipAsset;
+            var clipAsset = property.serializedObject.targetObject as ClipPlayableAsset;
             if (clipAsset == null)
             {
                 EditorGUI.HelpBox(position, "[MarkerFromTimeline] attribute is only supported for ClipAsset",

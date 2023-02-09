@@ -10,7 +10,7 @@ namespace MufflonUtil
     /// </summary>
     public abstract class TimelineBehaviour : PlayableBehaviour
     {
-        public TimelineClip Clip { get; set; }
+        public ClipPlayableAsset PlayableAsset { get; set; }
     }
     
     /// <summary>

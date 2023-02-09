@@ -40,8 +40,8 @@ namespace MufflonUtil
                     timelineController.BreakingLoop += Break;
                 }
 
-                bool isOutOfClipNextFrame = timelineController.PlayableDirector.time + info.deltaTime > Clip.end;
-                if (!_broken && isOutOfClipNextFrame) timelineController.PlayableDirector.time = Clip.start;
+                bool isOutOfClipNextFrame = timelineController.PlayableDirector.time + info.deltaTime > PlayableAsset.Clip.end;
+                if (!_broken && isOutOfClipNextFrame) timelineController.PlayableDirector.time = PlayableAsset.Clip.start;
             }
 
             protected override void OnStop(Playable playable, FrameData info,
@@ -52,7 +52,7 @@ namespace MufflonUtil
                 if (!_broken && playableDirector.state == PlayState.Playing &&
                     playableDirector.playableAsset == _playableAsset)
                 {
-                    playableDirector.time = Clip.start;
+                    playableDirector.time = PlayableAsset.Clip.start;
                 }
                 else
                 {

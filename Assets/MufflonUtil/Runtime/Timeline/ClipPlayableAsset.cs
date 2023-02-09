@@ -28,9 +28,11 @@ namespace MufflonUtil
 
         public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
         {
-            if (Template == null) Template = new TBehaviour();
-            Template.Clip = Clip;
-            return ScriptPlayable<TBehaviour>.Create(graph, Template);
+            var scriptPlayable = Template == null
+                ? ScriptPlayable<TBehaviour>.Create(graph)
+                : ScriptPlayable<TBehaviour>.Create(graph, Template);
+            scriptPlayable.GetBehaviour().PlayableAsset = this;
+            return scriptPlayable;
         }
     }
 }

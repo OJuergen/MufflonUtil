@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Samples.Scripts
+namespace MufflonUtil.Samples
 {
     public class TagComponent : MonoBehaviour
     { }

@@ -1,25 +1,25 @@
-﻿using MufflonUtil;
+﻿using JetBrains.Annotations;
 using UnityEngine;
 
-namespace Samples.Scripts
+namespace MufflonUtil.Samples
 {
     public class SelfReferenceSample : MonoBehaviour
     {
-        [SerializeField, SelfReference(true, true)]
+        [SerializeField, SelfReference(true, true), UsedImplicitly]
         private TagComponent _referenceParentAndChildren;
         
-        [SerializeField, SelfReference(true, true)]
+        [SerializeField, SelfReference(true, true), UsedImplicitly]
         private GameObject _referenceGameObjectParentAndChildren;
 
-        [SerializeField, SelfReference(true)]
+        [SerializeField, SelfReference(true), UsedImplicitly]
         private TagComponent _referenceChildren;
 
-        [SerializeField, SelfReference(false, true)]
+        [SerializeField, SelfReference(false, true), UsedImplicitly]
         private TagComponent _referenceParent;
 
-        [SerializeField, SelfReference]
+        [SerializeField, SelfReference, UsedImplicitly]
         private TagComponent _referenceSelf;
 
-        [SerializeField] private Component _regularReference;
+        [SerializeField, UsedImplicitly] private TagComponent _regularReference;
     }
 }

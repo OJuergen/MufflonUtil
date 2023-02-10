@@ -14,32 +14,39 @@ namespace MufflonUtil
         [Serializable]
         public class ClipBehaviour : TimelineTrack<Behaviour>.ClipBehaviour
         {
+            [SerializeField] private bool _executeInEditMode;
             private EnableBehaviourClip EnableClip => ClipAsset as EnableBehaviourClip;
             private bool _wasEnabled;
 
             protected override void OnStart(Behaviour behaviour)
             {
                 _wasEnabled = behaviour.enabled;
-                behaviour.enabled = EnableClip.IsEnabled;
+                if (Application.isPlaying || _executeInEditMode)
+                {
+                    behaviour.enabled = EnableClip.IsEnabled;
+                }
             }
 
             protected override void OnStop(Playable playable, FrameData info, Behaviour behaviour)
             {
-                switch (EnableClip.PostPlaybackBehaviour)
+                if(Application.isPlaying || _executeInEditMode)
                 {
-                    case PostPlaybackBehaviour.Revert:
-                        behaviour.enabled = _wasEnabled;
-                        break;
-                    case PostPlaybackBehaviour.Active:
-                        behaviour.enabled = true;
-                        break;
-                    case PostPlaybackBehaviour.Inactive:
-                        behaviour.enabled = false;
-                        break;
-                    case PostPlaybackBehaviour.KeepAsIs:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    switch (EnableClip.PostPlaybackBehaviour)
+                    {
+                        case PostPlaybackBehaviour.Revert:
+                            behaviour.enabled = _wasEnabled;
+                            break;
+                        case PostPlaybackBehaviour.Active:
+                            behaviour.enabled = true;
+                            break;
+                        case PostPlaybackBehaviour.Inactive:
+                            behaviour.enabled = false;
+                            break;
+                        case PostPlaybackBehaviour.KeepAsIs:
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
                 }
             }
         }

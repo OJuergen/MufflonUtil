@@ -10,18 +10,18 @@ namespace MufflonUtil
     {
         [field: SerializeField] private PostPlaybackBehaviour PostPlaybackBehaviour { get; set; }
         [field: SerializeField] private bool IsEnabled { get; set; }
+        [field: SerializeField] private bool ExecuteInEditMode { get; set; }
 
         [Serializable]
         public class ClipBehaviour : TimelineTrack<Behaviour>.ClipBehaviour
         {
-            [SerializeField] private bool _executeInEditMode;
             private EnableBehaviourClip EnableClip => ClipAsset as EnableBehaviourClip;
             private bool _wasEnabled;
 
             protected override void OnStart(Behaviour behaviour)
             {
                 _wasEnabled = behaviour.enabled;
-                if (Application.isPlaying || _executeInEditMode)
+                if (Application.isPlaying || EnableClip.ExecuteInEditMode)
                 {
                     behaviour.enabled = EnableClip.IsEnabled;
                 }
@@ -29,7 +29,7 @@ namespace MufflonUtil
 
             protected override void OnStop(Playable playable, FrameData info, Behaviour behaviour)
             {
-                if(Application.isPlaying || _executeInEditMode)
+                if (Application.isPlaying || EnableClip.ExecuteInEditMode)
                 {
                     switch (EnableClip.PostPlaybackBehaviour)
                     {

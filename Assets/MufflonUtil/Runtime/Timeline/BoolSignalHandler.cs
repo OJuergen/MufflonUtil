@@ -1,5 +1,5 @@
 namespace MufflonUtil
 {
-    public class FloatSignalHandler : DataSignalHandler<float>
+    public class BoolSignalHandler : DataSignalHandler<bool>
     { }
 }

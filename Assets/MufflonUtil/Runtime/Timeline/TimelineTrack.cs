@@ -22,14 +22,14 @@ namespace MufflonUtil
     }
 
     /// <summary>
-    /// Base class for custom <see cref="TimelineTrack"/>s with a predefined <see cref="Behaviour"/> class for
+    /// Base class for custom <see cref="TimelineTrack"/>s with a predefined <see cref="ClipBehaviour"/> class for
     /// <see cref="TimelineBehaviour{T}"/> with the bound <see cref="TComponent"/> type.
     /// </summary>
     /// <typeparam name="TComponent">The type of the component bound to the track.</typeparam>
     public abstract class TimelineTrack<TComponent> : TimelineTrack
         where TComponent : Component
     {
-        public abstract class Behaviour : TimelineBehaviour<TComponent>
+        public abstract class ClipBehaviour : TimelineClipBehaviour<TComponent>
         { }
     }
 
@@ -37,16 +37,16 @@ namespace MufflonUtil
     /// Base class for <see cref="TimelineTrack{T}"/>s with a custom mixer behaviour of their own. 
     /// </summary>
     /// <typeparam name="TComponent">The type of the component bound to the track.</typeparam>
-    /// <typeparam name="TMixerBehaviour">The type of the mixer behaviour of the track.</typeparam>
-    public abstract class TimelineTrack<TComponent, TMixerBehaviour> : TimelineTrack<TComponent>
+    /// <typeparam name="TTrackBehaviour">The type of the mixer behaviour of the track.</typeparam>
+    public abstract class TimelineTrack<TComponent, TTrackBehaviour> : TimelineTrack<TComponent>
         where TComponent : Component
-        where TMixerBehaviour : MixerBehaviour<TComponent>, new()
+        where TTrackBehaviour : TrackBehaviour<TComponent>, new()
     {
-        [SerializeField] private TMixerBehaviour _mixer;
-
         public override Playable CreateTrackMixer(PlayableGraph graph, GameObject go, int inputCount)
         {
-            return ScriptPlayable<TMixerBehaviour>.Create(graph, _mixer, inputCount);
+            var scriptPlayable = ScriptPlayable<TTrackBehaviour>.Create(graph, inputCount);
+            scriptPlayable.GetBehaviour().PlayableAsset = this;
+            return scriptPlayable;
         }
     }
 }

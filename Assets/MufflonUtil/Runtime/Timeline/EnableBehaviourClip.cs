@@ -6,26 +6,26 @@ using UnityEngine.Playables;
 namespace MufflonUtil
 {
     [DisplayName("Enable Behaviour")]
-    public class EnableClip : BehaviourTrack.Clip<EnableClip.Behaviour>
+    public class EnableClip : BehaviourTrack.Clip<EnableClip.ClipBehaviour>
     {
-        [field:SerializeField] protected override Behaviour Template { get; set; }
+        [field: SerializeField] private PostPlaybackBehaviour PostPlaybackBehaviour { get; set; }
+        [field: SerializeField] private bool IsEnabled { get; set; }
 
         [Serializable]
-        public class Behaviour : BehaviourTrack.Behaviour
+        public class ClipBehaviour : TimelineTrack<Behaviour>.ClipBehaviour
         {
-            [SerializeField] private PostPlaybackBehaviour _postPlaybackBehaviour;
-            [SerializeField] private bool _isEnabled;
+            private EnableClip EnableClip => ClipAsset as EnableClip;
             private bool _wasEnabled;
 
-            protected override void OnStart(UnityEngine.Behaviour behaviour)
+            protected override void OnStart(Behaviour behaviour)
             {
                 _wasEnabled = behaviour.enabled;
-                behaviour.enabled = _isEnabled;
+                behaviour.enabled = EnableClip.IsEnabled;
             }
 
-            protected override void OnStop(Playable playable, FrameData info, UnityEngine.Behaviour behaviour)
+            protected override void OnStop(Playable playable, FrameData info, Behaviour behaviour)
             {
-                switch (_postPlaybackBehaviour)
+                switch (EnableClip.PostPlaybackBehaviour)
                 {
                     case PostPlaybackBehaviour.Revert:
                         behaviour.enabled = _wasEnabled;
@@ -42,15 +42,6 @@ namespace MufflonUtil
                         throw new ArgumentOutOfRangeException();
                 }
             }
-        }
-
-        [Serializable]
-        public enum PostPlaybackBehaviour
-        {
-            KeepAsIs,
-            Revert,
-            Active,
-            Inactive
         }
     }
 }

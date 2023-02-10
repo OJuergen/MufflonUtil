@@ -4,12 +4,13 @@ using UnityEngine.Playables;
 
 namespace MufflonUtil
 {
-    public class BoolClip : AnimatorTrack.Clip<BoolClip.Behaviour>
+    public class BoolClip : AnimatorTrack.Clip<BoolClip.ClipBehaviour>
     {
-        [field:SerializeField] protected override Behaviour Template { get; set; }
+        [SerializeField] private ClipBehaviour _behaviour;
+        protected override ClipBehaviour BehaviourTemplate => _behaviour;
 
         [Serializable]
-        public class Behaviour : AnimatorTrack.AnimatorBehaviour
+        public class ClipBehaviour : AnimatorTrack.AnimatorClipBehaviour
         {
             [SerializeField] private string _parameter;
             [SerializeField] private bool _value;

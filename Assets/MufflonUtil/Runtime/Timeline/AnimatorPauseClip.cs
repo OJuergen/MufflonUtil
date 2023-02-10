@@ -1,35 +1,40 @@
-using System;
 using UnityEngine;
 using UnityEngine.Playables;
 
 namespace MufflonUtil
 {
-    public class PauseClip : AnimatorTrack.Clip<PauseClip.Behaviour>
+    public class AnimatorPauseClip : AnimatorTrack.Clip<AnimatorPauseClip.ClipBehaviour>
     {
-        [field:SerializeField] protected override Behaviour Template { get; set; }
+        [field: SerializeField]
+        private PostPlaybackBehaviour PostPlaybackBehaviour { get; set; } = PostPlaybackBehaviour.Revert;
 
-        [Serializable]
-        public class Behaviour : AnimatorTrack.AnimatorBehaviour
+        public class ClipBehaviour : AnimatorTrack.AnimatorClipBehaviour
         {
-            [SerializeField] private EndPolicy _endPolicy = EndPolicy.Previous;
+            private AnimatorPauseClip PauseClip => ClipAsset as AnimatorPauseClip;
             private bool _previousValue;
-
-            public enum EndPolicy
-            {
-                Previous,
-                Keep
-            }
 
             protected override void OnStart(Animator animator)
             {
                 _previousValue = Animator.enabled;
-                if (Application.isPlaying) Animator.enabled = false;
+                Animator.enabled = false;
             }
 
             protected override void OnStop(Playable playable, FrameData info, Animator animator)
             {
-                if (Application.isPlaying && _endPolicy == EndPolicy.Previous)
-                    animator.enabled = _previousValue;
+                switch (PauseClip.PostPlaybackBehaviour)
+                {
+                    case PostPlaybackBehaviour.Active:
+                        animator.enabled = true;
+                        break;
+                    case PostPlaybackBehaviour.Revert:
+                        animator.enabled = _previousValue;
+                        break;
+                    case PostPlaybackBehaviour.Inactive:
+                        animator.enabled = false;
+                        break;
+                    case PostPlaybackBehaviour.KeepAsIs:
+                        break;
+                }
             }
         }
     }

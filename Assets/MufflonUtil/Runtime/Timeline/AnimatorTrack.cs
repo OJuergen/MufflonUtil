@@ -8,7 +8,7 @@ namespace MufflonUtil
     [TrackClipType(typeof(IClipType))]
     public class AnimatorTrack : TimelineTrack<Animator>
     {
-        public class AnimatorBehaviour : Behaviour
+        public class AnimatorClipBehaviour : ClipBehaviour
         {
             protected Animator Animator => Context;
         }
@@ -16,7 +16,7 @@ namespace MufflonUtil
         private interface IClipType
         { }
 
-        public abstract class Clip<T> : ClipPlayableAsset<T>, IClipType where T : AnimatorBehaviour, new()
+        public abstract class Clip<T> : ClipPlayableAsset<T>, IClipType where T : AnimatorClipBehaviour, new()
         { }
     }
 }

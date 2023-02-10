@@ -9,30 +9,30 @@ namespace MufflonUtil
     /// Clip that stops the <see cref="PlayableDirector"/>.
     /// </summary>
     [DisplayName("Timeline Control/Stop Timeline Clip")]
-    public class StopClip : TimelineControllerTrack.Clip<StopClip.Behaviour>
+    public class StopClip : TimelineControllerTrack.Clip<StopClip.ClipBehaviour>
     {
-        [field: SerializeField] protected override Behaviour Template { get; set; }
+        private enum Timing
+        {
+            Start,
+            End
+        }
+
+        [field: SerializeField] private Timing StopTiming { get; set; }
 
         [Serializable]
-        public class Behaviour : TimelineControllerTrack.Behaviour
+        public class ClipBehaviour : TimelineControllerTrack.ClipBehaviour
         {
-            public enum Timing
-            {
-                Start,
-                End
-            }
-
-            [SerializeField] private Timing _timing;
+            private StopClip StopClip => ClipAsset as StopClip;
 
             protected override void OnStart(TimelineController timelineController)
             {
-                if (_timing == Timing.Start) timelineController.PlayableDirector.Stop();
+                if (StopClip.StopTiming == Timing.Start) timelineController.PlayableDirector.Stop();
             }
 
             protected override void OnStop(Playable playable, FrameData info,
                 TimelineController timelineController)
             {
-                if (_timing == Timing.End) timelineController.PlayableDirector.Stop();
+                if (StopClip.StopTiming == Timing.End) timelineController.PlayableDirector.Stop();
             }
         }
     }

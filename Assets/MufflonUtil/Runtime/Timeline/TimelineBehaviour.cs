@@ -10,9 +10,14 @@ namespace MufflonUtil
     /// </summary>
     public abstract class TimelineBehaviour : PlayableBehaviour
     {
-        public ClipPlayableAsset PlayableAsset { get; set; }
+        public PlayableAsset PlayableAsset { get; set; }
     }
-    
+
+    public abstract class TimelineClipBehaviour<T> : TimelineBehaviour<T> where T : Component
+    {
+        public ClipPlayableAsset ClipAsset => PlayableAsset as ClipPlayableAsset;
+    }
+
     /// <summary>
     /// Base class of a <see cref="TimelineBehaviour"/> with player data of type <typeparamref name="T"/>.
     /// Must be attached to a <see cref="TrackAsset"/> with a <see cref="TrackBindingTypeAttribute"/>

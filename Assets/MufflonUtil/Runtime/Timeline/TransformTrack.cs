@@ -8,16 +8,32 @@ namespace MufflonUtil
     [TrackBindingType(typeof(Transform))]
     [TrackColor(.75f, .75f, 0f)]
     [TrackClipType(typeof(IClip))]
-    public class TransformTrack : TimelineTrack<Transform, TransformTrack.TransformMixerBehaviour>
+    public class TransformTrack : TimelineTrack<Transform, TransformTrack.TransformTrackBehaviour>
     {
+        [field: SerializeField, Tooltip("If checked, updates to transform will be smoothed by a lerp")]
+        private bool DoLerp { get; set; } = true;
+
+        [field: SerializeField, Tooltip("Lerp amount per second.")]
+        private float LerpFactor { get; set; } = 5;
+
+        [field: SerializeField, Tooltip("If checked, behaviour will be previewed in edit mode.")]
+        private bool ExecuteInEditMode { get; set; }
+
+        [field: SerializeField, Tooltip("If checked, transform values are cached and reset when preview is stopped")]
+        private bool ResetInEditMode { get; set; } = true;
+
+        [field: SerializeField, Tooltip("If checked, transform values are cached and reset when playback has finished")]
+        private bool Reset { get; set; }
+        
         /// <summary>
-        /// Base class of the <see cref="Behaviour"/> of a <see cref="Clip{T}"/> on a <see cref="TransformTrack"/>. 
+        /// Base class of the <see cref="ClipBehaviour"/> of a <see cref="Clip{T}"/> on a <see cref="TransformTrack"/>. 
         /// </summary>
-        public class TransformBehaviour : Behaviour
+        public class TransformClipBehaviour : ClipBehaviour
         {
-            [field: SerializeField] public bool AffectsPosition { get; private set; }
-            [field: SerializeField] public bool AffectsRotation { get; private set; }
-            [field: SerializeField] public bool AffectsScale { get; private set; }
+            private IClip TransformClip => ClipAsset as IClip;
+            public bool AffectsPosition => TransformClip.AffectsPosition;
+            public bool AffectsRotation => TransformClip.AffectsRotation;
+            public bool AffectsScale => TransformClip.AffectsScale;
             public Vector3 Position { get; protected set; }
             public Quaternion Rotation { get; protected set; }
             public Vector3 Scale { get; protected set; }
@@ -27,38 +43,33 @@ namespace MufflonUtil
         /// Annotation Interface for <see cref="PlayableAsset"/>s that can be added to a <see cref="TransformTrack"/>. 
         /// </summary>
         private interface IClip
-        { }
+        {
+            bool AffectsPosition { get; }
+            bool AffectsRotation { get; }
+            bool AffectsScale { get; }
+        }
 
         /// <summary>
-        /// A <see cref="ClipPlayableAsset{T}"/> with a <see cref="TransformBehaviour"/>.
+        /// A <see cref="ClipPlayableAsset{T}"/> with a <see cref="TransformClipBehaviour"/>.
         /// Can be added to a <see cref="TransformTrack"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public abstract class Clip<T> : ClipPlayableAsset<T>, IClip where T : TransformBehaviour, new()
-        { }
+        public abstract class Clip<T> : ClipPlayableAsset<T>, IClip where T : TransformClipBehaviour, new()
+        {
+            public abstract bool AffectsPosition { get; }
+            public abstract bool AffectsRotation { get; }
+            public abstract bool AffectsScale { get; }
+        }
 
         /// <summary>
         /// Mixer behaviour of a <see cref="TransformTrack"/>.
         /// Computes a weighted average over all input clips and controls the bound <see cref="Transform"/> accordingly.
         /// </summary>
         [Serializable]
-        public class TransformMixerBehaviour : MixerBehaviour<Transform>
+        public class TransformTrackBehaviour : TrackBehaviour<Transform>
         {
-            [SerializeField, Tooltip("If checked, updates to transform will be smoothed by a lerp")]
-            private bool _doLerp;
-
-            [SerializeField, Tooltip("Lerp amount per second.")]
-            private float _lerpFactor;
-
-            [SerializeField, Tooltip("If checked, behaviour will be previewed in edit mode.")]
-            private bool _executeInEditMode;
-
-            [SerializeField, Tooltip("If checked, transform values are cached and reset when preview is stopped")]
-            private bool _resetInEditMode = true;
-
-            [SerializeField, Tooltip("If checked, transform values are cached and reset when playback has finished")]
-            private bool _reset;
-
+            TransformTrack TransformTrack => TrackAsset as TransformTrack;
+            
             // cached values for resetting
             private Vector3 _startPosition;
             private Quaternion _startRotation;
@@ -75,7 +86,7 @@ namespace MufflonUtil
             protected override void OnStop(Playable playable, FrameData info, Transform transform)
             {
                 // reset cached values
-                if (_reset || _resetInEditMode && !Application.isPlaying)
+                if (TransformTrack.Reset || TransformTrack.ResetInEditMode && !Application.isPlaying)
                 {
                     transform.position = _startPosition;
                     transform.rotation = _startRotation;
@@ -85,7 +96,7 @@ namespace MufflonUtil
 
             protected override void OnUpdate(Playable playable, FrameData info, Transform transform)
             {
-                if (!Application.isPlaying && !_executeInEditMode) return;
+                if (!Application.isPlaying && !TransformTrack.ExecuteInEditMode) return;
 
                 // determine setpoint values as weighted average over all inputs
                 Vector3 position = Vector3.zero;
@@ -98,25 +109,25 @@ namespace MufflonUtil
                 {
                     float weight = playable.GetInputWeight(i);
                     if (weight == 0) continue;
-                    var input = (ScriptPlayable<TransformBehaviour>)playable.GetInput(i);
-                    TransformBehaviour transformBehaviour = input.GetBehaviour();
+                    var input = (ScriptPlayable<TransformClipBehaviour>)playable.GetInput(i);
+                    TransformClipBehaviour transformClipBehaviour = input.GetBehaviour();
 
-                    if (transformBehaviour.AffectsPosition)
+                    if (transformClipBehaviour.AffectsPosition)
                     {
                         positionWeight += weight;
-                        position = Vector3.Lerp(position, transformBehaviour.Position, weight / positionWeight);
+                        position = Vector3.Lerp(position, transformClipBehaviour.Position, weight / positionWeight);
                     }
 
-                    if (transformBehaviour.AffectsRotation)
+                    if (transformClipBehaviour.AffectsRotation)
                     {
                         rotationWeight += weight;
-                        rotation = Quaternion.Slerp(rotation, transformBehaviour.Rotation, weight / rotationWeight);
+                        rotation = Quaternion.Slerp(rotation, transformClipBehaviour.Rotation, weight / rotationWeight);
                     }
 
-                    if (transformBehaviour.AffectsScale)
+                    if (transformClipBehaviour.AffectsScale)
                     {
                         scaleWeight += weight;
-                        scale = Vector3.Lerp(scale, transformBehaviour.Scale, weight / scaleWeight);
+                        scale = Vector3.Lerp(scale, transformClipBehaviour.Scale, weight / scaleWeight);
                     }
                 }
 
@@ -124,7 +135,7 @@ namespace MufflonUtil
                 rotation = Quaternion.Slerp(transform.rotation, rotation, rotationWeight);
                 scale = Vector3.Lerp(transform.localScale, scale, scaleWeight);
 
-                float lerpValue = _doLerp ? _lerpFactor * Time.deltaTime : 1;
+                float lerpValue = TransformTrack.DoLerp ? TransformTrack.LerpFactor * Time.deltaTime : 1;
                 transform.position = Vector3.Lerp(transform.position, position, lerpValue);
                 transform.rotation = Quaternion.Slerp(transform.rotation, rotation, lerpValue);
                 transform.localScale = Vector3.Lerp(transform.localScale, scale, lerpValue);

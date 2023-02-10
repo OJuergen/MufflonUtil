@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -6,27 +5,26 @@ using UnityEngine.Playables;
 namespace MufflonUtil
 {
     [DisplayName("Timeline Control/Jump")]
-    public class JumpClip : TimelineControllerTrack.Clip<JumpClip.Behaviour>
+    public class JumpClip : TimelineControllerTrack.Clip<JumpClip.ClipBehaviour>
     {
-        [field:SerializeField] protected override Behaviour Template { get; set; }
+        [SerializeField, MarkerFromTimeline] private JumpMarker _marker;
 
-        [Serializable]
-        public class Behaviour : TimelineControllerTrack.Behaviour
+        public class ClipBehaviour : TimelineTrack<TimelineController>.ClipBehaviour
         {
+            private JumpClip JumpClip => ClipAsset as JumpClip;
             private bool _isInitialized;
-            [SerializeField, MarkerFromTimeline] private JumpMarker _marker;
-            
+
             public void Jump()
             {
-                if (_marker == null)
+                if (JumpClip._marker == null)
                 {
-                    Debug.LogWarning($"No matching target JumpMarker {_marker} found!");
+                    Debug.LogWarning($"No matching target JumpMarker {JumpClip._marker} found!");
                     return;
                 }
 
                 Context.BreakLoop();
                 Context.PlayableDirector.Pause(); // prevent markers that are jumped from being executed
-                Context.PlayableDirector.time = _marker.time;
+                Context.PlayableDirector.time = JumpClip._marker.time;
                 Context.PlayableDirector.Play();
             }
 

@@ -4,12 +4,14 @@ using UnityEngine.Playables;
 
 namespace MufflonUtil
 {
-    public class DirectorSpeedClip : PlayableDirectorTrack.PlayableDirectorClipPlayableAsset<DirectorSpeedClip.Behaviour>
+    public class
+        DirectorSpeedClip : PlayableDirectorTrack.PlayableDirectorClipPlayableAsset<DirectorSpeedClip.ClipBehaviour>
     {
-        [field:SerializeField] protected override Behaviour Template { get; set; }
+        [SerializeField] private ClipBehaviour _behaviour;
+        protected override ClipBehaviour BehaviourTemplate => _behaviour;
 
         [Serializable]
-        public class Behaviour : PlayableDirectorTrack.Behaviour
+        public class ClipBehaviour : PlayableDirectorTrack.ClipBehaviour
         {
             [SerializeField] private float _speed;
 

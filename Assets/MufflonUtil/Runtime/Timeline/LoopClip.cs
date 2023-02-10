@@ -4,11 +4,9 @@ using UnityEngine.Playables;
 namespace MufflonUtil
 {
     [DisplayName("Timeline Control/Loop")]
-    public class LoopClip : TimelineControllerTrack.Clip<LoopClip.Behaviour>
+    public class LoopClip : TimelineControllerTrack.Clip<LoopClip.ClipBehaviour>
     {
-        protected override Behaviour Template { get; set; }
-
-        public class Behaviour : TimelineControllerTrack.Behaviour
+        public class ClipBehaviour : TimelineControllerTrack.ClipBehaviour
         {
             private bool _isInitialized;
             private bool _broken;
@@ -40,8 +38,8 @@ namespace MufflonUtil
                     timelineController.BreakingLoop += Break;
                 }
 
-                bool isOutOfClipNextFrame = timelineController.PlayableDirector.time + info.deltaTime > PlayableAsset.Clip.end;
-                if (!_broken && isOutOfClipNextFrame) timelineController.PlayableDirector.time = PlayableAsset.Clip.start;
+                bool isOutOfClipNextFrame = timelineController.PlayableDirector.time + info.deltaTime > ClipAsset.Clip.end;
+                if (!_broken && isOutOfClipNextFrame) timelineController.PlayableDirector.time = ClipAsset.Clip.start;
             }
 
             protected override void OnStop(Playable playable, FrameData info,
@@ -52,7 +50,7 @@ namespace MufflonUtil
                 if (!_broken && playableDirector.state == PlayState.Playing &&
                     playableDirector.playableAsset == _playableAsset)
                 {
-                    playableDirector.time = PlayableAsset.Clip.start;
+                    playableDirector.time = ClipAsset.Clip.start;
                 }
                 else
                 {

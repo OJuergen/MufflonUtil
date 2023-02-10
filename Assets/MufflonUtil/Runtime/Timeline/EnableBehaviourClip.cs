@@ -6,7 +6,7 @@ using UnityEngine.Playables;
 namespace MufflonUtil
 {
     [DisplayName("Enable Behaviour")]
-    public class EnableClip : BehaviourTrack.Clip<EnableClip.ClipBehaviour>
+    public class EnableBehaviourClip : BehaviourTrack.Clip<EnableBehaviourClip.ClipBehaviour>
     {
         [field: SerializeField] private PostPlaybackBehaviour PostPlaybackBehaviour { get; set; }
         [field: SerializeField] private bool IsEnabled { get; set; }
@@ -14,7 +14,7 @@ namespace MufflonUtil
         [Serializable]
         public class ClipBehaviour : TimelineTrack<Behaviour>.ClipBehaviour
         {
-            private EnableClip EnableClip => ClipAsset as EnableClip;
+            private EnableBehaviourClip EnableClip => ClipAsset as EnableBehaviourClip;
             private bool _wasEnabled;
 
             protected override void OnStart(Behaviour behaviour)

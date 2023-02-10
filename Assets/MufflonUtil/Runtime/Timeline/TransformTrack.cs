@@ -14,10 +14,10 @@ namespace MufflonUtil
         private bool DoLerp { get; set; } = true;
 
         [field: SerializeField, Tooltip("Lerp amount per second.")]
-        private float LerpFactor { get; set; } = 5;
+        private float LerpFactor { get; set; } = 3;
 
         [field: SerializeField, Tooltip("If checked, behaviour will be previewed in edit mode.")]
-        private bool ExecuteInEditMode { get; set; }
+        private bool ExecuteInEditMode { get; set; } = true;
 
         [field: SerializeField, Tooltip("If checked, transform values are cached and reset when preview is stopped")]
         private bool ResetInEditMode { get; set; } = true;

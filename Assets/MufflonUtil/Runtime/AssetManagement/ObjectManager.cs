@@ -6,7 +6,7 @@ namespace MufflonUtil
 {
     public class ObjectManager<T> : Singleton<ObjectManager<T>> where T : Component, IManagedObject
     {
-        private readonly Dictionary<int, T> _registeredObjects = new Dictionary<int, T>();
+        private readonly Dictionary<int, T> _registeredObjects = new();
         private int _nextID;
 
         public delegate void ObjectDelegate(T obj);
@@ -53,6 +53,14 @@ namespace MufflonUtil
 
         public IEnumerable<T> GetAll()
         {
+            int[] idsToRemove = _registeredObjects
+                .Where(kv => kv.Value == null)
+                .Select(kv => kv.Key).ToArray();
+            foreach (int id in idsToRemove)
+            {
+                _registeredObjects.Remove(id);
+            }
+
             return _registeredObjects.Values;
         }
 

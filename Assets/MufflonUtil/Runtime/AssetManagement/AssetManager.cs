@@ -68,7 +68,7 @@ namespace MufflonUtil
             base.OnEnable();
             AssetPostProcessor.ImportedScriptableObject += OnImportedScriptableObject;
             AssetPostProcessor.DeletedAsset += OnDeletedScriptableObject;
-            FindAssets();
+            // FindAssets();
         }
 
         protected new void OnDisable()

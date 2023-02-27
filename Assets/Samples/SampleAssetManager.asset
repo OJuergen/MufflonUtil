@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: SampleAssetManager
   m_EditorClassIdentifier: 
   _assets:
+  - {fileID: 11400000, guid: 5c56a68d407c1d54a804139d783354fe, type: 2}
   - {fileID: 11400000, guid: ce8315e9af31fd94cba77350182a9867, type: 2}
-  - {fileID: 11400000, guid: ceed9b23fc05c8043b719c694abd46b2, type: 2}

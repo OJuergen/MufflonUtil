@@ -12,7 +12,7 @@ namespace MufflonUtil
             Min = min;
             Max = max;
         }
-        
+
         public MinMaxAttribute(int min, int max)
         {
             Min = min;
@@ -26,6 +26,7 @@ namespace MufflonUtil
         public int Min;
         public int Max;
         public int Random => UnityEngine.Random.Range(Min, Max);
+        public bool Contains(int value) => value >= Min && value <= Max;
     }
 
     [Serializable]
@@ -34,5 +35,6 @@ namespace MufflonUtil
         public float Min;
         public float Max;
         public float Random => UnityEngine.Random.Range(Min, Max);
+        public bool Contains(float value) => value >= Min && value <= Max;
     }
 }

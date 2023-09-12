@@ -117,6 +117,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5464707592755294378}
+  - component: {fileID: 4788967821763430313}
   - component: {fileID: 8593327502363431691}
   - component: {fileID: 806403392305462023}
   m_Layer: 0
@@ -144,6 +145,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4788967821763430313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2648937714197252634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f24cbed26494edaac59e468f0060fcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _name: Name
+  _description: 'Description supports multiple lines
+
+    and <color=#FF0000><b><i>rich-</i></b></color>text
+    formatting.'
 --- !u!114 &8593327502363431691
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,14 +12,14 @@ namespace MufflonUtil
         [SerializeField] private bool _parameterValueWhenStopped;
         [SerializeField] private AnimatorParameterId _parameter;
 
-        protected override void OnStateEntered(PlayableDirector context, Animator animator, AnimatorStateInfo stateInfo,
+        protected override void OnEnter(PlayableDirector context, Animator animator, AnimatorStateInfo stateInfo,
             int layerIndex, AnimatorControllerPlayable controller)
         {
             Context.Play(_playableAsset);
             Context.stopped += OnStopped;
         }
 
-        protected override void OnStateExit(PlayableDirector context, Animator animator, AnimatorStateInfo stateInfo,
+        protected override void OnExit(PlayableDirector context, Animator animator, AnimatorStateInfo stateInfo,
             int layerIndex, AnimatorControllerPlayable controller)
         {
             if (_stopOnExit) Context.Stop();

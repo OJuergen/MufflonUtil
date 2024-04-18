@@ -49,7 +49,7 @@ namespace MufflonUtil
             }
 
             IsActive = true;
-            OnStateEntered(Context, animator, stateInfo, layerIndex, controller);
+            OnEnter(Context, animator, stateInfo, layerIndex, controller);
         }
 
         public sealed override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -58,7 +58,7 @@ namespace MufflonUtil
         }
 
         /// <summary>
-        /// Initialize is called when the state is entered for the first time. Called before <see cref="OnStateEntered"/>
+        /// Initialize is called when the state is entered for the first time. Called before <see cref="OnEnter"/>
         /// </summary>
         protected virtual void OnInitialize(T context, Animator animator, AnimatorStateInfo stateInfo, int layerIndex,
             AnimatorControllerPlayable controller)
@@ -67,7 +67,7 @@ namespace MufflonUtil
         /// <summary>
         /// Called every time the state is entered.
         /// </summary>
-        protected virtual void OnStateEntered(T context, Animator animator, AnimatorStateInfo stateInfo, int layerIndex,
+        protected virtual void OnEnter(T context, Animator animator, AnimatorStateInfo stateInfo, int layerIndex,
             AnimatorControllerPlayable controller)
         { }
 
@@ -76,7 +76,7 @@ namespace MufflonUtil
         {
             if (Context != null && Animator != null)
             {
-                OnStateUpdate(Context, Animator, stateInfo, layerIndex, controller);
+                OnUpdate(Context, Animator, stateInfo, layerIndex, controller);
             }
             else
             {
@@ -92,7 +92,7 @@ namespace MufflonUtil
         /// <summary>
         /// Called every frame while the state is active.
         /// </summary>
-        protected virtual void OnStateUpdate(T context, Animator animator, AnimatorStateInfo stateInfo,
+        protected virtual void OnUpdate(T context, Animator animator, AnimatorStateInfo stateInfo,
             int layerIndex, AnimatorControllerPlayable controller)
         { }
 
@@ -102,7 +102,7 @@ namespace MufflonUtil
             if (Context != null && Animator != null)
             {
                 IsActive = false;
-                OnStateExit(Context, animator, stateInfo, layerIndex, controller);
+                OnExit(Context, animator, stateInfo, layerIndex, controller);
             }
             else
             {
@@ -119,7 +119,7 @@ namespace MufflonUtil
         /// <summary>
         /// Called when the state is being exited.
         /// </summary>
-        protected virtual void OnStateExit(T context, Animator animator, AnimatorStateInfo stateInfo, int layerIndex,
+        protected virtual void OnExit(T context, Animator animator, AnimatorStateInfo stateInfo, int layerIndex,
             AnimatorControllerPlayable controller)
         { }
 
@@ -148,7 +148,7 @@ namespace MufflonUtil
         public sealed override void OnStateMachineEnter(Animator animator, int stateMachinePathHash,
             AnimatorControllerPlayable controller)
         {
-            OnStateMachineEnter(Context, animator, stateMachinePathHash, controller);
+            OnMachineEnter(Context, animator, stateMachinePathHash, controller);
         }
 
         public sealed override void OnStateMachineExit(Animator animator, int stateMachinePathHash,
@@ -156,7 +156,7 @@ namespace MufflonUtil
         {
             IsInitialized = false;
             IsActive = false;
-            OnStateMachineExit(Context, animator, stateMachinePathHash, controller);
+            OnMachineExit(Context, animator, stateMachinePathHash, controller);
         }
 
         public sealed override void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
@@ -164,7 +164,7 @@ namespace MufflonUtil
             // see overload with controller parameter
         }
 
-        protected virtual void OnStateMachineEnter(T context, Animator animator, int stateMachinePathHash,
+        protected virtual void OnMachineEnter(T context, Animator animator, int stateMachinePathHash,
             AnimatorControllerPlayable controller)
         { }
 
@@ -173,7 +173,7 @@ namespace MufflonUtil
             // see overload with controller parameter
         }
 
-        protected virtual void OnStateMachineExit(T context, Animator animator, int stateMachinePathHash,
+        protected virtual void OnMachineExit(T context, Animator animator, int stateMachinePathHash,
             AnimatorControllerPlayable controller)
         { }
     }

@@ -22,12 +22,21 @@ namespace MufflonUtil
         /// </summary>
         protected Transform Transform { get; private set; }
 
-        private bool _initialized;
+        /// <summary>
+        /// True if this state was entered before and it was successfully initialized.
+        /// Check to see if you can expect Context, Animator and Transform properties to be set.
+        /// </summary>
+        protected bool IsInitialized { get; private set; }
+        
+        /// <summary>
+        /// True if this state is currently the active state of the state machine.
+        /// </summary>
+        protected bool IsActive { get; private set; }
 
         public sealed override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex,
             AnimatorControllerPlayable controller)
         {
-            if (!_initialized)
+            if (!IsInitialized)
             {
                 Animator = animator;
                 Context = animator.GetComponentInParent<T>();
@@ -35,10 +44,11 @@ namespace MufflonUtil
                     throw new InvalidOperationException(
                         $"State machine behaviour needs sibling/parent component of type {typeof(T)}");
                 Transform = Context.transform;
-                _initialized = true;
+                IsInitialized = true;
                 OnInitialize(Context, animator, stateInfo, layerIndex, controller);
             }
 
+            IsActive = true;
             OnStateEntered(Context, animator, stateInfo, layerIndex, controller);
         }
 
@@ -91,6 +101,7 @@ namespace MufflonUtil
         {
             if (Context != null && Animator != null)
             {
+                IsActive = false;
                 OnStateExit(Context, animator, stateInfo, layerIndex, controller);
             }
             else
@@ -143,6 +154,8 @@ namespace MufflonUtil
         public sealed override void OnStateMachineExit(Animator animator, int stateMachinePathHash,
             AnimatorControllerPlayable controller)
         {
+            IsInitialized = false;
+            IsActive = false;
             OnStateMachineExit(Context, animator, stateMachinePathHash, controller);
         }
 

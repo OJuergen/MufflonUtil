@@ -18,14 +18,14 @@ namespace MufflonUtil
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
             _isActive = false;
-            if (_sceneLoadAsyncOp != null)
-            {
-                _sceneLoadAsyncOp.completed += OnLoaded;
-            }
 
             if (SceneManager.GetSceneByName(_scene.SceneName).isLoaded)
             {
                 SceneManager.UnloadSceneAsync(_scene.SceneName);
+            }
+            else if (_sceneLoadAsyncOp is { isDone: false })
+            {
+                _sceneLoadAsyncOp.completed += OnLoaded;
             }
         }
 

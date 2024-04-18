@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.Playables;
 
 namespace MufflonUtil
@@ -10,22 +11,24 @@ namespace MufflonUtil
         [SerializeField] private bool _setParameterWhenStopped;
         [SerializeField] private bool _parameterValueWhenStopped;
         [SerializeField] private AnimatorParameterId _parameter;
-        
-        protected override void OnStateEntered(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+
+        protected override void OnStateEntered(PlayableDirector context, Animator animator, AnimatorStateInfo stateInfo,
+            int layerIndex, AnimatorControllerPlayable controller)
         {
             Context.Play(_playableAsset);
             Context.stopped += OnStopped;
         }
 
-        public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        protected override void OnStateExit(PlayableDirector context, Animator animator, AnimatorStateInfo stateInfo,
+            int layerIndex, AnimatorControllerPlayable controller)
         {
-            if(_stopOnExit) Context.Stop();
+            if (_stopOnExit) Context.Stop();
             Context.stopped -= OnStopped;
         }
 
-        private void OnStopped(PlayableDirector obj)
+        private void OnStopped(PlayableDirector playableDirector)
         {
-            if(_setParameterWhenStopped) Animator.SetBool(_parameter, _parameterValueWhenStopped);
+            if (_setParameterWhenStopped) Animator.SetBool(_parameter, _parameterValueWhenStopped);
         }
     }
 }

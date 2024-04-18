@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Animations;
 
 namespace MufflonUtil
 {
@@ -13,16 +14,18 @@ namespace MufflonUtil
         /// The context MonoBehaviour owning the state machine.
         /// </summary>
         protected T Context { get; private set; }
-        
+
         protected Animator Animator { get; private set; }
-        
+
         /// <summary>
         /// The transform of the owning GameObject.
         /// </summary>
         protected Transform Transform { get; private set; }
+
         private bool _initialized;
 
-        public sealed override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        public sealed override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex,
+            AnimatorControllerPlayable controller)
         {
             if (!_initialized)
             {
@@ -33,22 +36,132 @@ namespace MufflonUtil
                         $"State machine behaviour needs sibling/parent component of type {typeof(T)}");
                 Transform = Context.transform;
                 _initialized = true;
-                OnInitialize(animator, stateInfo, layerIndex);
+                OnInitialize(Context, animator, stateInfo, layerIndex, controller);
             }
 
-            OnStateEntered(animator, stateInfo, layerIndex);
+            OnStateEntered(Context, animator, stateInfo, layerIndex, controller);
+        }
+
+        public sealed override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            // see overload with controller parameter
         }
 
         /// <summary>
         /// Initialize is called when the state is entered for the first time. Called before <see cref="OnStateEntered"/>
         /// </summary>
-        protected virtual void OnInitialize(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        protected virtual void OnInitialize(T context, Animator animator, AnimatorStateInfo stateInfo, int layerIndex,
+            AnimatorControllerPlayable controller)
         { }
 
         /// <summary>
         /// Called every time the state is entered.
         /// </summary>
-        protected virtual void OnStateEntered(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        protected virtual void OnStateEntered(T context, Animator animator, AnimatorStateInfo stateInfo, int layerIndex,
+            AnimatorControllerPlayable controller)
+        { }
+
+        public sealed override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex,
+            AnimatorControllerPlayable controller)
+        {
+            if (Context != null && Animator != null)
+            {
+                OnStateUpdate(Context, Animator, stateInfo, layerIndex, controller);
+            }
+            else
+            {
+                throw new InvalidOperationException("Context or Animator is not initialized.");
+            }
+        }
+
+        public sealed override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            // see overload with controller parameter
+        }
+
+        /// <summary>
+        /// Called every frame while the state is active.
+        /// </summary>
+        protected virtual void OnStateUpdate(T context, Animator animator, AnimatorStateInfo stateInfo,
+            int layerIndex, AnimatorControllerPlayable controller)
+        { }
+
+        public sealed override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex,
+            AnimatorControllerPlayable controller)
+        {
+            if (Context != null && Animator != null)
+            {
+                OnStateExit(Context, animator, stateInfo, layerIndex, controller);
+            }
+            else
+            {
+                throw new InvalidOperationException("Context or Animator is not initialized.");
+            }
+        }
+
+
+        public sealed override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            // see overload with controller parameter
+        }
+
+        /// <summary>
+        /// Called when the state is being exited.
+        /// </summary>
+        protected virtual void OnStateExit(T context, Animator animator, AnimatorStateInfo stateInfo, int layerIndex,
+            AnimatorControllerPlayable controller)
+        { }
+
+        public sealed override void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            // not applicable for state machine
+        }
+
+        public sealed override void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex,
+            AnimatorControllerPlayable controller)
+        {
+            // not applicable for state machine
+        }
+
+        public sealed override void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+        {
+            // not applicable for state machine
+        }
+
+        public sealed override void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex,
+            AnimatorControllerPlayable controller)
+        {
+            // not applicable for state machine
+        }
+
+        public sealed override void OnStateMachineEnter(Animator animator, int stateMachinePathHash,
+            AnimatorControllerPlayable controller)
+        {
+            OnStateMachineEnter(Context, animator, stateMachinePathHash, controller);
+        }
+
+        public sealed override void OnStateMachineExit(Animator animator, int stateMachinePathHash,
+            AnimatorControllerPlayable controller)
+        {
+            OnStateMachineExit(Context, animator, stateMachinePathHash, controller);
+        }
+
+        public sealed override void OnStateMachineEnter(Animator animator, int stateMachinePathHash)
+        {
+            // see overload with controller parameter
+        }
+
+        protected virtual void OnStateMachineEnter(T context, Animator animator, int stateMachinePathHash,
+            AnimatorControllerPlayable controller)
+        { }
+
+        public sealed override void OnStateMachineExit(Animator animator, int stateMachinePathHash)
+        {
+            // see overload with controller parameter
+        }
+
+        protected virtual void OnStateMachineExit(T context, Animator animator, int stateMachinePathHash,
+            AnimatorControllerPlayable controller)
         { }
     }
 }

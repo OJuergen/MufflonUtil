@@ -1,4 +1,7 @@
 using System;
+using System.Linq;
+using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -14,11 +17,13 @@ namespace MufflonUtil
         public string SceneName => _sceneName;
         public Scene Scene => SceneManager.GetSceneByName(_sceneName);
         public bool IsLoaded => Scene.isLoaded;
+        [field: SerializeField, NotEditable] public bool IsValid { get; private set; }
 
         public void OnBeforeSerialize()
         {
 #if UNITY_EDITOR
             _sceneName = _sceneAsset == null ? "" : _sceneAsset.name;
+            IsValid = _sceneAsset != null;
 #endif
         }
 

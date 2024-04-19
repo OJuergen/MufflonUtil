@@ -31,13 +31,15 @@ namespace MufflonUtil
             if (!IsValid)
             {
                 throw new InvalidOperationException($"Cannot exit state {gameState}:" +
-                                                    "State machine is not in a valid state.");
+                                                    "State machine is not in a valid state. " +
+                                                    "This might be because of badly configured transitions.");
             }
 
             if (!gameState.Equals(State))
             {
                 throw new ArgumentException($"Cannot exit {gameState}, " +
-                                            $"because state machine is currently in state {State}");
+                                            $"because state machine is currently in state {State}. " +
+                                            "This might be because of badly configured transitions.");
             }
 
             IsValid = false;

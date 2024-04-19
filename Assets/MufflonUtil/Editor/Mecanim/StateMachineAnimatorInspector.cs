@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -29,7 +30,8 @@ namespace MufflonUtil
 
             if (_transitionsNeedFixing)
             {
-                EditorGUILayout.HelpBox("Some transitions are badly configured for a logical game state machine.",
+                EditorGUILayout.HelpBox("Some transitions are badly configured for a logical game state machine. " +
+                                        "All transitions must have zero duration and no exit time.",
                     MessageType.Warning);
                 if (_autoFix || GUILayout.Button("Fix"))
                 {
@@ -39,7 +41,9 @@ namespace MufflonUtil
 
             if (_statesNeedFixing)
             {
-                EditorGUILayout.HelpBox("Some animator states have no game state behaviour or more than one.",
+                EditorGUILayout.HelpBox("Some animator states have no game state behaviour or more than one. " +
+                                        "Or there are sub state machines with game state behaviours. " +
+                                        "This is not supported",
                     MessageType.Warning);
                 if (_autoFix || GUILayout.Button("Fix"))
                 {
@@ -58,8 +62,7 @@ namespace MufflonUtil
         {
             var animatorController = gameStateMachine.Animator.runtimeAnimatorController as AnimatorController;
             if (animatorController == null) return;
-            foreach (AnimatorStateTransition transition in animatorController.layers
-                         .SelectMany(layer => layer.stateMachine.states.SelectMany(state => state.state.transitions)))
+            foreach (AnimatorStateTransition transition in GetAllTransitions(animatorController))
             {
                 transition.duration = 0f;
                 transition.hasExitTime = false;
@@ -76,8 +79,8 @@ namespace MufflonUtil
             _transitionsNeedFixing = false;
             var animatorController = gameStateMachine.Animator.runtimeAnimatorController as AnimatorController;
             if (animatorController == null) return;
-            _transitionsNeedFixing = animatorController.layers
-                .SelectMany(layer => layer.stateMachine.states.SelectMany(state => state.state.transitions))
+
+            _transitionsNeedFixing = GetAllTransitions(animatorController)
                 .Any(transition => transition.duration != 0f
                                    || transition.hasExitTime
                                    || !transition.hasFixedDuration
@@ -85,22 +88,57 @@ namespace MufflonUtil
                                    || transition.offset != 0f);
         }
 
+        private HashSet<AnimatorStateMachine> GetAllStateMachines(AnimatorController animatorController)
+        {
+            HashSet<AnimatorStateMachine> stateMachines = animatorController.layers
+                .Select(layer => layer.stateMachine)
+                .ToHashSet();
+
+            bool newElementsAdded;
+            do
+            {
+                int initialCount = stateMachines.Count;
+                HashSet<AnimatorStateMachine> newMachines = stateMachines.SelectMany(stateMachine =>
+                    stateMachine.stateMachines.Select(child => child.stateMachine)).ToHashSet();
+                stateMachines.UnionWith(newMachines);
+                newElementsAdded = stateMachines.Count > initialCount;
+            } while (newElementsAdded);
+
+            return stateMachines;
+        }
+
+        private IEnumerable<AnimatorState> GetAllStates(AnimatorController animatorController)
+        {
+            return GetAllStateMachines(animatorController)
+                .SelectMany(stateMachine => stateMachine.states.Select(s => s.state));
+        }
+
+        private IEnumerable<AnimatorStateTransition> GetAllTransitions(AnimatorController animatorController)
+        {
+            HashSet<AnimatorStateMachine> stateMachines = GetAllStateMachines(animatorController);
+            return stateMachines
+                .SelectMany(stateMachine => stateMachine.states.SelectMany(state => state.state.transitions))
+                .Union(stateMachines.SelectMany(sm => sm.anyStateTransitions));
+        }
+
         private void CheckStates(GameStateMachine gameStateMachine)
         {
             _statesNeedFixing = false;
             var animatorController = gameStateMachine.Animator.runtimeAnimatorController as AnimatorController;
             if (animatorController == null) return;
-            _statesNeedFixing = animatorController.layers.SelectMany(layer => layer.stateMachine.states)
-                .Any(state => state.state.behaviours.Count(behaviour => behaviour is GameStateBehaviour) != 1);
+            _statesNeedFixing = GetAllStates(animatorController)
+                .Any(state => state.behaviours.Count(behaviour => behaviour is GameStateBehaviour) != 1);
+            _statesNeedFixing |= GetAllStateMachines(animatorController)
+                .Any(machine => machine.behaviours.Any(behaviour => behaviour is GameStateBehaviour));
         }
 
         private void FixStates(GameStateMachine gameStateMachine)
         {
             var animatorController = gameStateMachine.Animator.runtimeAnimatorController as AnimatorController;
             if (animatorController == null) return;
-            foreach (AnimatorState state in animatorController.layers.SelectMany(layer => layer.stateMachine.states)
-                         .Select(state => state.state))
+            foreach (AnimatorState state in GetAllStates(animatorController))
             {
+                // very state should have exactly one identifying GameStateBehaviour
                 if (state.behaviours.Count(behaviour => behaviour is GameStateBehaviour) > 1)
                 {
                     StateMachineBehaviour keep = state.behaviours.First(behaviour => behaviour is GameStateBehaviour);
@@ -112,6 +150,15 @@ namespace MufflonUtil
                 if (!state.behaviours.Any(behaviour => behaviour is GameStateBehaviour))
                 {
                     state.AddStateMachineBehaviour(typeof(GameStateBehaviour));
+                }
+                
+                // SubStateMachines should not have GameStateBehaviours. They are StateMachines and not GameStates.
+                // Internal state changes will trigger OnExit and OnEnter events on Behaviours attached
+                // to the SubStateMachine, which game states shouldn't do.
+                foreach (AnimatorStateMachine stateMachine in GetAllStateMachines(animatorController))
+                {
+                    stateMachine.behaviours = stateMachine.behaviours
+                        .Where(behaviour => behaviour is not GameStateBehaviour).ToArray();
                 }
             }
 

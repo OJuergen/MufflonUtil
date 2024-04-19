@@ -38,13 +38,13 @@ namespace MufflonUtil.ScriptableObjectStateMachine
             GameState = targetState;
             if (targetState != null && !targetState.IsInitialized)
             {
-                if (_logStateChanges) Debug.Log($"Initializing {GameState}");
+                if (_logStateChanges) Debug.Log($"Initializing {targetState}");
                 targetState.InitializeState(this);
             }
 
             if (targetState != null)
             {
-                if (_logStateChanges) Debug.Log($"Entering {GameState}");
+                if (_logStateChanges) Debug.Log($"Entering {targetState}");
                 targetState.EnterState(this);
             }
         }

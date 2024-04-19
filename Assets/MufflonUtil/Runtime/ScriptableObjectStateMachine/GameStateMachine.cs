@@ -9,6 +9,8 @@ namespace MufflonUtil.ScriptableObjectStateMachine
         public bool IsValid => GameState != null;
 
         [SerializeField] private GameState _initialState;
+        [Header("Debug")]
+        [SerializeField] private bool _logStateChanges;
 
         private void Awake()
         {
@@ -29,12 +31,22 @@ namespace MufflonUtil.ScriptableObjectStateMachine
                     throw new InvalidOperationException($"Cannot transition from {GameState} to {targetState}");
                 }
 
+                if (_logStateChanges) Debug.Log($"Exiting {GameState}");
                 GameState.ExitState(this);
             }
 
             GameState = targetState;
-            if (targetState != null && !targetState.IsInitialized) targetState.InitializeState(this);
-            if (targetState != null) targetState.EnterState(this);
+            if (targetState != null && !targetState.IsInitialized)
+            {
+                if (_logStateChanges) Debug.Log($"Initializing {GameState}");
+                targetState.InitializeState(this);
+            }
+
+            if (targetState != null)
+            {
+                if (_logStateChanges) Debug.Log($"Entering {GameState}");
+                targetState.EnterState(this);
+            }
         }
 
         private void Update()

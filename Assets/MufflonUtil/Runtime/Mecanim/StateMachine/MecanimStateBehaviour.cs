@@ -1,39 +1,39 @@
 using UnityEngine;
 using UnityEngine.Animations;
 
-namespace MufflonUtil
+namespace MufflonUtil.Mecanim.StateMachine
 {
-    public class GameStateBehaviour : StateMachineBehaviour<GameStateMachine>
+    public class MecanimStateBehaviour : StateMachineBehaviour<MecanimStateMachine>
     {
-        [SerializeField] private GameState _gameState;
+        [SerializeField] private MecanimGameState _mecanimGameState;
 
-        protected sealed override void OnEnter(GameStateMachine context, Animator animator,
+        protected sealed override void OnEnter(MecanimStateMachine context, Animator animator,
             AnimatorStateInfo stateInfo, int layerIndex,
             AnimatorControllerPlayable controller)
         {
-            context.OnEnterState(_gameState);
+            context.OnEnterState(_mecanimGameState);
             OnEnter();
         }
 
         protected virtual void OnEnter()
         {
-            Debug.Log($"Enter {_gameState}");
+            Debug.Log($"Enter {_mecanimGameState}");
         }
 
-        protected sealed override void OnExit(GameStateMachine context, Animator animator,
+        protected sealed override void OnExit(MecanimStateMachine context, Animator animator,
             AnimatorStateInfo stateInfo, int layerIndex,
             AnimatorControllerPlayable controller)
         {
-            context.OnExitState(_gameState);
+            context.OnExitState(_mecanimGameState);
             OnExit();
         }
 
         protected virtual void OnExit()
         {
-            Debug.Log($"Exit {_gameState}");
+            Debug.Log($"Exit {_mecanimGameState}");
         }
 
-        protected override void OnInitialize(GameStateMachine context, Animator animator,
+        protected override void OnInitialize(MecanimStateMachine context, Animator animator,
             AnimatorStateInfo stateInfo, int layerIndex,
             AnimatorControllerPlayable controller)
         {
@@ -43,7 +43,7 @@ namespace MufflonUtil
         protected virtual void OnInitialize()
         { }
 
-        protected override void OnUpdate(GameStateMachine context, Animator animator, AnimatorStateInfo stateInfo,
+        protected override void OnUpdate(MecanimStateMachine context, Animator animator, AnimatorStateInfo stateInfo,
             int layerIndex,
             AnimatorControllerPlayable controller)
         {
@@ -53,7 +53,7 @@ namespace MufflonUtil
         protected virtual void OnUpdate()
         { }
 
-        protected override void OnMachineEnter(GameStateMachine context, Animator animator, int stateMachinePathHash,
+        protected override void OnMachineEnter(MecanimStateMachine context, Animator animator, int stateMachinePathHash,
             AnimatorControllerPlayable controller)
         {
             OnMachineEnter();
@@ -62,7 +62,7 @@ namespace MufflonUtil
         protected virtual void OnMachineEnter()
         { }
 
-        protected override void OnMachineExit(GameStateMachine context, Animator animator, int stateMachinePathHash,
+        protected override void OnMachineExit(MecanimStateMachine context, Animator animator, int stateMachinePathHash,
             AnimatorControllerPlayable controller)
         {
             OnMachineExit();

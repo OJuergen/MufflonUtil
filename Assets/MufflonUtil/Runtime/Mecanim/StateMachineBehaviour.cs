@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Animations;
 
-namespace MufflonUtil
+namespace MufflonUtil.Mecanim
 {
     /// <summary>
     /// A <see cref="StateMachineBehaviour"/> with a context MonoBehaviour.

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace MufflonUtil
+namespace MufflonUtil.Mecanim
 {
     public class AnimatorDebugIMGUI : MonoBehaviour
     {

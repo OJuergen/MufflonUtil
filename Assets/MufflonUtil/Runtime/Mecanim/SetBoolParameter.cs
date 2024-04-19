@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace MufflonUtil
+namespace MufflonUtil.Mecanim
 {
     /// <summary>
     /// Sets a boolean state machine parameter on enter and on exit.

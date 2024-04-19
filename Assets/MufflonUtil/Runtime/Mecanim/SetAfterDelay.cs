@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace MufflonUtil
+namespace MufflonUtil.Mecanim
 {
     /// <summary>
     /// Sets a bool animator parameter a certain time after the state is entered.

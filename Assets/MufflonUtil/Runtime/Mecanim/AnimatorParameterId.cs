@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace MufflonUtil
+namespace MufflonUtil.Mecanim
 {
     [Serializable]
     public struct AnimatorParameterId

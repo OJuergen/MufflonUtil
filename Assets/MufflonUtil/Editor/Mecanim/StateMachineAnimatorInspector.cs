@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using MufflonUtil.Mecanim.StateMachine;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 
 namespace MufflonUtil
 {
-    [CustomEditor(typeof(GameStateMachine), editorForChildClasses: true)]
+    [CustomEditor(typeof(MecanimStateMachine), editorForChildClasses: true)]
     public class StateMachineAnimatorInspector : Editor
     {
         private bool _transitionsNeedFixing;
@@ -17,7 +18,7 @@ namespace MufflonUtil
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            var gameStateMachine = (GameStateMachine)target;
+            var gameStateMachine = (MecanimStateMachine)target;
             if (gameStateMachine == null) return;
 
             _autoCheck = EditorPrefsUtil.Checkbox("Auto Check", gameStateMachine);
@@ -52,15 +53,15 @@ namespace MufflonUtil
             }
         }
 
-        private void RunChecks(GameStateMachine gameStateMachine)
+        private void RunChecks(MecanimStateMachine mecanimStateMachine)
         {
-            CheckStates(gameStateMachine);
-            CheckTransitions(gameStateMachine);
+            CheckStates(mecanimStateMachine);
+            CheckTransitions(mecanimStateMachine);
         }
 
-        private void FixTransitions(GameStateMachine gameStateMachine)
+        private void FixTransitions(MecanimStateMachine mecanimStateMachine)
         {
-            var animatorController = gameStateMachine.Animator.runtimeAnimatorController as AnimatorController;
+            var animatorController = mecanimStateMachine.Animator.runtimeAnimatorController as AnimatorController;
             if (animatorController == null) return;
             foreach (AnimatorStateTransition transition in GetAllTransitions(animatorController))
             {
@@ -74,10 +75,10 @@ namespace MufflonUtil
             _transitionsNeedFixing = false;
         }
 
-        private void CheckTransitions(GameStateMachine gameStateMachine)
+        private void CheckTransitions(MecanimStateMachine mecanimStateMachine)
         {
             _transitionsNeedFixing = false;
-            var animatorController = gameStateMachine.Animator.runtimeAnimatorController as AnimatorController;
+            var animatorController = mecanimStateMachine.Animator.runtimeAnimatorController as AnimatorController;
             if (animatorController == null) return;
 
             _transitionsNeedFixing = GetAllTransitions(animatorController)
@@ -121,35 +122,35 @@ namespace MufflonUtil
                 .Union(stateMachines.SelectMany(sm => sm.anyStateTransitions));
         }
 
-        private void CheckStates(GameStateMachine gameStateMachine)
+        private void CheckStates(MecanimStateMachine mecanimStateMachine)
         {
             _statesNeedFixing = false;
-            var animatorController = gameStateMachine.Animator.runtimeAnimatorController as AnimatorController;
+            var animatorController = mecanimStateMachine.Animator.runtimeAnimatorController as AnimatorController;
             if (animatorController == null) return;
             _statesNeedFixing = GetAllStates(animatorController)
-                .Any(state => state.behaviours.Count(behaviour => behaviour is GameStateBehaviour) != 1);
+                .Any(state => state.behaviours.Count(behaviour => behaviour is MecanimStateBehaviour) != 1);
             _statesNeedFixing |= GetAllStateMachines(animatorController)
-                .Any(machine => machine.behaviours.Any(behaviour => behaviour is GameStateBehaviour));
+                .Any(machine => machine.behaviours.Any(behaviour => behaviour is MecanimStateBehaviour));
         }
 
-        private void FixStates(GameStateMachine gameStateMachine)
+        private void FixStates(MecanimStateMachine mecanimStateMachine)
         {
-            var animatorController = gameStateMachine.Animator.runtimeAnimatorController as AnimatorController;
+            var animatorController = mecanimStateMachine.Animator.runtimeAnimatorController as AnimatorController;
             if (animatorController == null) return;
             foreach (AnimatorState state in GetAllStates(animatorController))
             {
                 // very state should have exactly one identifying GameStateBehaviour
-                if (state.behaviours.Count(behaviour => behaviour is GameStateBehaviour) > 1)
+                if (state.behaviours.Count(behaviour => behaviour is MecanimStateBehaviour) > 1)
                 {
-                    StateMachineBehaviour keep = state.behaviours.First(behaviour => behaviour is GameStateBehaviour);
+                    StateMachineBehaviour keep = state.behaviours.First(behaviour => behaviour is MecanimStateBehaviour);
                     state.behaviours = state.behaviours
-                        .Where(behaviour => behaviour is not GameStateBehaviour || behaviour == keep)
+                        .Where(behaviour => behaviour is not MecanimStateBehaviour || behaviour == keep)
                         .ToArray();
                 }
 
-                if (!state.behaviours.Any(behaviour => behaviour is GameStateBehaviour))
+                if (!state.behaviours.Any(behaviour => behaviour is MecanimStateBehaviour))
                 {
-                    state.AddStateMachineBehaviour(typeof(GameStateBehaviour));
+                    state.AddStateMachineBehaviour(typeof(MecanimStateBehaviour));
                 }
                 
                 // SubStateMachines should not have GameStateBehaviours. They are StateMachines and not GameStates.
@@ -158,7 +159,7 @@ namespace MufflonUtil
                 foreach (AnimatorStateMachine stateMachine in GetAllStateMachines(animatorController))
                 {
                     stateMachine.behaviours = stateMachine.behaviours
-                        .Where(behaviour => behaviour is not GameStateBehaviour).ToArray();
+                        .Where(behaviour => behaviour is not MecanimStateBehaviour).ToArray();
                 }
             }
 

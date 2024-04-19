@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace MufflonUtil
+namespace MufflonUtil.Mecanim
 {
     public class LoadScene : StateMachineBehaviour
     {

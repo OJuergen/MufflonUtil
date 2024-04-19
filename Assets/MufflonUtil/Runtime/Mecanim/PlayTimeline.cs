@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-namespace MufflonUtil
+namespace MufflonUtil.Mecanim
 {
     public class PlayTimeline : StateMachineBehaviour<PlayableDirector>
     {

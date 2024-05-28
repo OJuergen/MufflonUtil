@@ -7,6 +7,9 @@ namespace MufflonUtil
     {
         private static readonly Dictionary<Type, object> Services = new();
 
+        public static bool HasService<T>() => HasService(typeof(T));
+        public static bool HasService(Type type) => Services.ContainsKey(type);
+
         public static T Get<T>()
         {
             if (Services.TryGetValue(typeof(T), out object service))

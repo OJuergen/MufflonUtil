@@ -31,5 +31,10 @@ namespace MufflonUtil
         {
             return sceneReference.Scene;
         }
+
+        public static implicit operator string(SceneReference sceneReference)
+        {
+            return sceneReference.SceneName;
+        }
     }
 }

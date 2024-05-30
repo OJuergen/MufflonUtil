@@ -2,7 +2,7 @@ using JetBrains.Annotations;
 
 namespace MufflonUtil
 {
-    public interface ISingleton
+    public interface ISingleton : IPreloadedAsset
     { }
 
     public class Singleton<T> : ISingleton where T : Singleton<T>, new()

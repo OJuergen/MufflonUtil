@@ -25,5 +25,10 @@ namespace MufflonUtil
             if (service == null) throw new ArgumentNullException(nameof(service));
             Services[typeof(T)] = service;
         }
+
+        public static void SetDefault<T>(T service)
+        {
+            if (!HasService<T>()) Set(service);
+        } 
     }
 }

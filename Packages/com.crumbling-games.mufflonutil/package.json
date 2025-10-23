@@ -1,8 +1,8 @@
 {
-  "name": "com.mufflonzucht.mufflonutil",
+  "name": "com.crumbling-games.mufflonutil",
   "displayName": "Mufflon Utility",
-  "version": "0.9.0",
-  "unity": "2021.3",
+  "version": "0.10.0",
+  "unity": "2022.3",
   "description": "Various utility components and functions like. \nFor example singletons and object pools, extensions for Timeline, Mecanim and more.",
   "type": "library",
   "dependencies": {

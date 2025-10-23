@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.mufflonzucht.mufflonutil": {
+    "com.crumbling-games.mufflonutil": {
       "version": "file:com.crumbling-games.mufflonutil",
       "depth": 0,
       "source": "embedded",

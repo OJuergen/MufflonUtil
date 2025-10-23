@@ -25,12 +25,12 @@ namespace MufflonUtil
             protected override void OnStart(Transform transform)
             {
                 Camera mainCam = Camera.main;
-                _mainCamTransform = mainCam != null ? mainCam.transform : null;
+                _mainCamTransform = mainCam ? mainCam.transform : null;
             }
 
             protected override void OnUpdate(Playable playable, FrameData info, Transform transform)
             {
-                if (_mainCamTransform == null) return;
+                if (!_mainCamTransform) return;
 
                 Vector3 cameraPosition = _mainCamTransform.position;
                 Position = cameraPosition + _mainCamTransform.TransformDirection(_relativeSetpointPosition);

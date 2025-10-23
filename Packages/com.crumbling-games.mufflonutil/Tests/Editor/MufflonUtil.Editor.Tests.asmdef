@@ -1,5 +1,6 @@
 {
     "name": "MufflonUtil.Editor.Tests",
+    "rootNamespace": "MufflonUtil.Editor.Tests",
     "references": [
         "GUID:1b6b778c06516f34ebcf355063a3066d"
     ],

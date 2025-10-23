@@ -2,10 +2,10 @@
   "name": "com.crumbling-games.mufflonutil",
   "displayName": "Mufflon Utility",
   "version": "0.10.0",
-  "unity": "2022.3",
+  "unity": "6000.2",
   "description": "Various utility components and functions like. \nFor example singletons and object pools, extensions for Timeline, Mecanim and more.",
   "type": "library",
   "dependencies": {
-    "com.unity.timeline": "1.6.5"
+    "com.unity.timeline": "1.8.9"
   }
 }

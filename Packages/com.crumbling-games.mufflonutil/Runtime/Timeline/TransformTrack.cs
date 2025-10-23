@@ -36,6 +36,7 @@ namespace MufflonUtil
             public bool AffectsScale => TransformClip.AffectsScale;
             public Vector3 Position { get; protected set; }
             public Quaternion Rotation { get; protected set; }
+            // ReSharper disable once UnusedAutoPropertyAccessor.Global
             public Vector3 Scale { get; protected set; }
         }
 

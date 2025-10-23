@@ -13,6 +13,7 @@ namespace MufflonUtil
         /// <summary>
         /// The Unity-generated file GUID. This is a unique identifier for the asset.
         /// </summary>
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         [field: SerializeField, NotEditable] public string GUID { get; [UsedImplicitly] private set; }
         
         public void OnBeforeSerialize()

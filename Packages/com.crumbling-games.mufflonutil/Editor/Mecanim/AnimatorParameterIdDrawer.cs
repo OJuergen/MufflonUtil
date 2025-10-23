@@ -10,8 +10,7 @@ namespace MufflonUtil.Editor
     {
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
-            if (property.serializedObject.isEditingMultipleObjects) return 0f;
-            return 18f;
+            return property.serializedObject.isEditingMultipleObjects ? 0f : 18f;
         }
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)

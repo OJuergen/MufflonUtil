@@ -7,6 +7,7 @@ namespace MufflonUtil.ScriptableObjectStateMachine
     public class GameState : ScriptableObject
     {
         public bool IsInitialized { get; private set; }
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public bool IsActive { get; private set; }
         [SerializeField, Tooltip("Limit transitions to these target states. " +
                                  "Allow all transitions by leaving this empty.")]

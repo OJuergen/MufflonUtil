@@ -89,7 +89,7 @@ namespace MufflonUtil.Editor
                                    || transition.offset != 0f);
         }
 
-        private HashSet<AnimatorStateMachine> GetAllStateMachines(AnimatorController animatorController)
+        private static HashSet<AnimatorStateMachine> GetAllStateMachines(AnimatorController animatorController)
         {
             HashSet<AnimatorStateMachine> stateMachines = animatorController.layers
                 .Select(layer => layer.stateMachine)

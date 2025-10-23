@@ -22,7 +22,7 @@ namespace MufflonUtil.Editor
             }
 
             var targetObject = property.serializedObject.targetObject as Component;
-            if (targetObject == null)
+            if (!targetObject)
             {
                 EditorGUI.HelpBox(position, "Invalid serialized object", MessageType.Warning);
                 return;
@@ -74,7 +74,7 @@ namespace MufflonUtil.Editor
             EditorGUI.BeginChangeCheck();
             Undo.RecordObject(property.serializedObject.targetObject, $"Change self-reference {property.name}");
 
-            if (autoAssign && value == null && choices.Length > 0) value = choices[0];
+            if (autoAssign && !value && choices.Length > 0) value = choices[0];
             int selectedIndex = Array.IndexOf(choices, value) + 1;
             selectedIndex = EditorGUI.Popup(position, label, selectedIndex,
                 choiceStrings.Select(choice => new GUIContent {text = choice}).ToArray());
@@ -104,7 +104,7 @@ namespace MufflonUtil.Editor
 
             if (typeof(GameObject).IsAssignableFrom(fieldInfo.FieldType))
             {
-                HashSet<GameObject> components = new HashSet<GameObject> {target.gameObject};
+                var components = new HashSet<GameObject> {target.gameObject};
                 if (children)
                     components.UnionWith(target.GetComponentsInChildren<Transform>(true).Select(t => t.gameObject));
                 if (parents)

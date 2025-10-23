@@ -3,7 +3,7 @@ using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
-namespace MufflonUtil.Tests
+namespace MufflonUtil.Editor.Tests
 {
     public class ScriptableObjectSingletonTest
     {

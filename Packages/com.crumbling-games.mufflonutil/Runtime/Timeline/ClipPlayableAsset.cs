@@ -24,11 +24,12 @@ namespace MufflonUtil
         /// <summary>
         /// Override this with a serialized backing field to configure and animate properties.
         /// </summary>
+        // ReSharper disable once UnassignedGetOnlyAutoProperty - must be override for Unity to support inspector in timeline view
         protected virtual TBehaviour BehaviourTemplate { get; }
 
         public override Playable CreatePlayable(PlayableGraph graph, GameObject owner)
         {
-            var scriptPlayable = BehaviourTemplate == null
+            ScriptPlayable<TBehaviour> scriptPlayable = BehaviourTemplate == null
                 ? ScriptPlayable<TBehaviour>.Create(graph)
                 : ScriptPlayable<TBehaviour>.Create(graph, BehaviourTemplate);
             scriptPlayable.GetBehaviour().PlayableAsset = this;

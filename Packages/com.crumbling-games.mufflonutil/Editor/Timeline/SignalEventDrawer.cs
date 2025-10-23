@@ -16,19 +16,17 @@ namespace MufflonUtil.Editor
         private static GameObject FindBoundObject(SerializedProperty property)
         {
             var component = property.serializedObject.targetObject as Component;
-            return component != null ? component.gameObject : null;
+            return component ? component.gameObject : null;
         }
 
         protected override void OnAddEvent(ReorderableList list)
         {
             base.OnAddEvent(list);
             SerializedProperty listProperty = list.serializedProperty;
-            if (listProperty.arraySize > 0)
-            {
-                SerializedProperty lastCall = list.serializedProperty.GetArrayElementAtIndex(listProperty.arraySize - 1);
-                SerializedProperty targetProperty = lastCall.FindPropertyRelative(TargetPropertyName);
-                targetProperty.objectReferenceValue = FindBoundObject(listProperty);
-            }
+            if (listProperty.arraySize <= 0) return;
+            SerializedProperty lastCall = list.serializedProperty.GetArrayElementAtIndex(listProperty.arraySize - 1);
+            SerializedProperty targetProperty = lastCall.FindPropertyRelative(TargetPropertyName);
+            targetProperty.objectReferenceValue = FindBoundObject(listProperty);
         }
 
         protected override void DrawEventHeader(Rect headerRect) {}

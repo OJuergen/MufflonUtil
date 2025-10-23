@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace MufflonUtil.Tests
+namespace MufflonUtil.Editor.Tests
 {
     [CreateAssetMenu(menuName = "MufflonUtil/Samples/SO singleton")]
     public class TestScriptableObjectSingleton : ScriptableObjectSingleton<TestScriptableObjectSingleton>

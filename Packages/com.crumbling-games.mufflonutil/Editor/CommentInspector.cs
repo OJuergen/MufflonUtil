@@ -14,7 +14,7 @@ namespace MufflonUtil.Editor
         private void OnEnable()
         {
             var comment = target as Comment;
-            if (comment == null) return;
+            if (!comment) return;
 
             _name = serializedObject.FindProperty("_name");
             _description = serializedObject.FindProperty("_description");

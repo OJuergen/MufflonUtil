@@ -20,6 +20,7 @@ namespace MufflonUtil.Mecanim
         /// <summary>
         /// The transform of the owning GameObject.
         /// </summary>
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         protected Transform Transform { get; private set; }
 
         /// <summary>
@@ -31,6 +32,7 @@ namespace MufflonUtil.Mecanim
         /// <summary>
         /// True if this state is currently the active state of the state machine.
         /// </summary>
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         protected bool IsActive { get; private set; }
 
         public sealed override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex,

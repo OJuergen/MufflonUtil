@@ -10,7 +10,7 @@
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=packages_005Ccom_002Ecrumbling_002Dgames_002Emufflonutil_005Cruntime/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=packages_005Ccom_002Ecrumbling_002Dgames_002Emufflonutil_005Cruntime_005Cassetmanagement/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=packages_005Ccom_002Ecrumbling_002Dgames_002Emufflonutil_005Cruntime_005Cmecanim/@EntryIndexedValue">False</s:Boolean>
-	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=packages_005Ccom_002Ecrumbling_002Dgames_002Emufflonutil_005Cruntime_005Cmecanim_005Cstatemachine/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=packages_005Ccom_002Ecrumbling_002Dgames_002Emufflonutil_005Cruntime_005Cmecanim_005Cstatemachine/@EntryIndexedValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=packages_005Ccom_002Ecrumbling_002Dgames_002Emufflonutil_005Cruntime_005Cobjectpool/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=packages_005Ccom_002Ecrumbling_002Dgames_002Emufflonutil_005Cruntime_005Cscriptableobjectstatemachine/@EntryIndexedValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/CodeInspection/NamespaceProvider/NamespaceFoldersToSkip/=packages_005Ccom_002Ecrumbling_002Dgames_002Emufflonutil_005Cruntime_005Ctimeline/@EntryIndexedValue">True</s:Boolean>

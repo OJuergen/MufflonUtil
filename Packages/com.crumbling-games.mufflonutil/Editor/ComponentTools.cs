@@ -25,7 +25,7 @@ namespace MufflonUtil.Editor
             {
                 if (component is Renderer renderer)
                 {
-                    var materials = renderer.sharedMaterials;
+                    Material[] materials = renderer.sharedMaterials;
                     foreach (Material material in materials)
                     {
                         InternalEditorUtility.SetIsInspectorExpanded(material, expanded);

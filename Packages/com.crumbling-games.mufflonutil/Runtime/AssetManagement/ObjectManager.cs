@@ -19,7 +19,7 @@ namespace MufflonUtil
             ManagedObject.Registered += OnObjectRegistered;
             ManagedObject.Unregistered += OnObjectUnregistered;
             _nextID = 0;
-            foreach (T managedObject in Object.FindObjectsOfType<T>())
+            foreach (T managedObject in Object.FindObjectsByType<T>(FindObjectsSortMode.None))
             {
                 OnObjectRegistered(managedObject);
             }
@@ -48,13 +48,13 @@ namespace MufflonUtil
 
         public T Get(int id)
         {
-            return _registeredObjects.TryGetValue(id, out T t) ? t : null;
+            return _registeredObjects.GetValueOrDefault(id);
         }
 
         public IEnumerable<T> GetAll()
         {
             int[] idsToRemove = _registeredObjects
-                .Where(kv => kv.Value == null)
+                .Where(kv => !kv.Value)
                 .Select(kv => kv.Key).ToArray();
             foreach (int id in idsToRemove)
             {

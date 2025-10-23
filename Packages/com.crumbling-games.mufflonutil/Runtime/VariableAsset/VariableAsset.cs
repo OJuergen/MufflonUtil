@@ -2,7 +2,7 @@
 using JetBrains.Annotations;
 using UnityEngine;
 
-namespace Crumbling.Util
+namespace MufflonUtil
 {
     /// <summary>
     /// Scriptable object asset container for a variable of type <see cref="T"/>.

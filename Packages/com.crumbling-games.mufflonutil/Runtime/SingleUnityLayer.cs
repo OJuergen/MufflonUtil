@@ -5,17 +5,16 @@ namespace MufflonUtil
     [System.Serializable]
     public class SingleUnityLayer
     {
-        [SerializeField] private int m_LayerIndex;
-        public int LayerIndex => m_LayerIndex;
+        [field: SerializeField] public int LayerIndex { get; private set; }
 
         public void Set(int layerIndex)
         {
-            if (layerIndex > 0 && layerIndex < 32)
+            if (layerIndex is > 0 and < 32)
             {
-                m_LayerIndex = layerIndex;
+                LayerIndex = layerIndex;
             }
         }
 
-        public int Mask => 1 << m_LayerIndex;
+        public int Mask => 1 << LayerIndex;
     }
 }

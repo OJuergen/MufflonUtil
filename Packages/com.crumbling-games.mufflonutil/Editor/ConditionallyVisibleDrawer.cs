@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -37,12 +38,12 @@ namespace MufflonUtil.Editor
             }
 
             Object targetObject = property.serializedObject.targetObject;
-            if (targetObject == null)
+            if (!targetObject)
             {
                 return (true, "Invalid serialized object");
             }
 
-            var constructorArguments = customAttributeData.ConstructorArguments;
+            IList<CustomAttributeTypedArgument> constructorArguments = customAttributeData.ConstructorArguments;
             var fieldOrPropertyName = (string) constructorArguments[0].Value;
             object valueToCompareWith = constructorArguments.Count < 2 ? true : constructorArguments[1].Value;
             bool invert = constructorArguments.Count >= 3 && (bool) constructorArguments[2].Value;

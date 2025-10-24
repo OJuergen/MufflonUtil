@@ -4,8 +4,44 @@
   "version": "0.10.1",
   "unity": "6000.2",
   "description": "Various utility components and functions like. \nFor example singletons and object pools, extensions for Timeline, Mecanim and more.",
-  "type": "library",
   "dependencies": {
     "com.unity.timeline": "1.8.9"
-  }
+  },
+  "keywords": [
+    "utility",
+    "timeline",
+    "extensions",
+    "mecanim",
+    "state machine",
+    "state-machine",
+    "event system",
+    "event-system"
+  ],
+  "author": {
+    "name": "Ole Jürgensen",
+    "email": "ole@crumbling-games.com",
+    "url": "https://www.crumbling-games.com"
+  },
+  "samples": [
+    {
+      "displayName": "Basics",
+      "description": "Core example files, demonstrating basic components of the utility.",
+      "path": "Samples~/Basics"
+    },
+    {
+      "displayName": "Scriptable-Object State Machine",
+      "description": "A state machine where each state is represented with an scriptable-object asset.",
+      "path": "Samples~/SOStateMachine"
+    },
+    {
+      "displayName": "Mecanim State Machine",
+      "description": "A state machine using Unity's Mecanim Animator and state behaviours.",
+      "path": "Samples~/MecanimStateMachine"
+    },
+    {
+      "displayName": "Timeline",
+      "description": "A variety of extensions for Unity's Timeline. Custom tracks & asset-less markers that carry data.",
+      "path": "Samples~/Timeline"
+    }
+  ]
 }

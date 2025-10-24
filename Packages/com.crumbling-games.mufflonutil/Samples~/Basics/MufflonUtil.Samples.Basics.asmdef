@@ -1,0 +1,16 @@
+{
+    "name": "MufflonUtil.Samples.Basics",
+    "rootNamespace": "MufflonUtil.Samples.Basics",
+    "references": [
+        "GUID:1b6b778c06516f34ebcf355063a3066d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

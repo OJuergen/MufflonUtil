@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace MufflonUtil.Samples
+namespace MufflonUtil.Samples.Timeline
 {
     public class TimelineEventHandler : MonoBehaviour
     {

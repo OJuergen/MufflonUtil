@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
 using UnityEngine;
 
-namespace MufflonUtil.Samples
+namespace MufflonUtil.Samples.Basics
 {
     public class SelfReferenceSample : MonoBehaviour
     {
